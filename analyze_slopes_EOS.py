@@ -16,29 +16,50 @@ Felipe Gonzalez                                                          Berkele
 Last modified on:                                                                  10/22/2025
 """
 
+#fig_size = [600/72.27 ,820/72.27]
+fig_size = [700/72.27 ,550/72.27]
+params = {'axes.labelsize': 20, 'legend.fontsize': 15,
+          'xtick.labelsize': 20, 'ytick.labelsize': 20, 
+          'xtick.major.size': 12,'ytick.major.size': 12,
+          'xtick.minor.size': 7,'ytick.minor.size': 7,
+          'xtick.direction': 'in', 'ytick.direction': 'in',
+          'xtick.major.width': 1.0, 'ytick.major.width': 1.0,
+          'xtick.minor.width': 0.5, 'ytick.minor.width': 0.5,
+          'text.usetex': False, 'figure.figsize': fig_size, 'axes.linewidth': 2,
+          'xtick.major.pad': 5,
+          'ytick.major.pad': 10,
+          'figure.subplot.bottom': 0.070,'figure.subplot.top': 0.980,'figure.subplot.left': 0.120,'figure.subplot.right': 0.950}
+
+
+rcParams.update(params)
+
+
 
 """
 EQUATION OF STATE: A map between isotherms T <---> P(rho),E(rho),V(rho) functions
 """
 EOS = {}           # EOS[T] = [ V(rho), P(rho), E(rho) ]
+one_iron_u_angstrom3_gcc = 92.732804
 list_of_files = glob.glob('EOS_Fe_liq_*.dat') 
 list_of_files.sort() 
 for f in list_of_files[:]:
  # EXAMPLE:
  #1       2      3   4    5        6         7           8        9      10     11       12        13     14      15           16          17  18    19    20
  #Fe776   144Fe  N=  144  V[A^3]=  883.9623  rho[g/cc]=  15.1064  T[K]=  10000  P[GPa]=  602.645   1.195  E[Ha]=  -3.95370000  0.12708900  t=  0.47  0.38  sol
- data = loadtxt(f, usecols=(3,5,7,9,11,14)) # N, V, rho, T, P, E
+ data = loadtxt(f, usecols=(3,5,7,9,11,12,14,15)) # N, V, rho, T, P,Perr, E,Eerr
  N = data[:,0]
  v = data[:,1]/N
  r = data[:,2]
  t = data[:,3][0]  # All t's are the same. Take the 1st.
  p = data[:,4]
- e = data[:,5]/N*27.211386  # Ha to eV
+ perr = data[:,5]
+ e = data[:,6]/N*27.211386  # Ha to eV
+ eerr = data[:,7]/N*27.211386  # Ha to eV
  
  #FIXME: Interpolation that returns zero= 0 for densities out of range
- sspl_P = InterpolatedUnivariateSpline(r, p, k=3, ext=0)  # P(rho) FIXME: Allow extrapolations (ext=0)
- sspl_E = InterpolatedUnivariateSpline(r, e, k=3, ext=0)  # E(rho) FIXME: Allow extrapolations (ext=0)
- sspl_V = InterpolatedUnivariateSpline(r, v, k=3, ext=0)  # V(rho) FIXME: Allow extrapolations (ext=0)
+ sspl_P = InterpolatedUnivariateSpline(r, p, k=3, ext=1)  # P(rho) FIXME: Allow extrapolations (ext=0)
+ sspl_E = InterpolatedUnivariateSpline(r, e, k=3, ext=1)  # E(rho) FIXME: Allow extrapolations (ext=0)
+ sspl_V = InterpolatedUnivariateSpline(r, v, k=3, ext=1)  # V(rho) FIXME: Allow extrapolations (ext=0)
 
  EOS[t] = sspl_P,sspl_E,sspl_V, (N,v,r,t,p,e)
 
@@ -70,23 +91,16 @@ class MyEOS:
 
  def Energy(r,T):  # Arbitrary r,T
   Ts = sorted (list(EOS.keys()) )
-  print("Tenimo Ts=",Ts)
-  print("Y trato de evaluar en r,T=",r,T)
-  print("Ts[0]=",Ts[0])
-  print("Se supone que puedo evaluar EOS[10000]=",EOS[10000])
-  print("Se supone que puedo evaluar EOS[10000][0](10)=",EOS[10000][0](10))
-  print("T in Ts at r=",r, [ float(EOS[Ti][0](12)) for Ti in Ts])
   PP = [ float(EOS[Ti][0](r))  for Ti in  Ts ]   # Evaluating P(Ti) only at the Ti available in the EOS at rho=r
   EE = [ float(EOS[Ti][1](r))  for Ti in  Ts ]   # Evaluating E(Ti) only at the Ti available in the EOS at rho=r
 
-  print("ESTAS SON LAS PP:",PP)
   Ts = [ Ts[i] for i in range(len(PP)) if PP[i]>0 ]
   EE = [ EE[i] for i in range(len(PP)) if PP[i]>0 ]
   PP = [ PP[i] for i in range(len(PP)) if PP[i]>0 ]
-  for i in range(len(PP)):   print ("rho=",r,"T=",T, "P=",PP[i],"E=",EE[i])
-  print("POR ACA RECIBI:")
-  print("EE=",EE)
-  print("Ts=",Ts)
+
+  #print("# Energy(rho,T) at rho[g/cc]=",r,"T[K]=",T)
+  #for i in range(len(PP)):   print ("rho[g/cc]=",r,"T[K]=",Ts[i], "P[GPa]=",PP[i],"E[eV/atom]=",EE[i])
+
   Spl_e = InterpolatedUnivariateSpline(Ts, EE)  # E(T) for rho= r 
   return float(Spl_e(T))
 
@@ -188,7 +202,7 @@ class MyEOS:
  def GruneisenParameter(r,plot=False):
   # ASSUME IT IS INDEPENDENT OF T
   if plot:
-   fig = figure('Gruneisen Parameter fits')
+   fig2 = figure('Gruneisen Parameter fits')
    ax5 = subplot(111)
    ax5.set_xlabel("Energy (eV/atom)")
    ax5.set_ylabel("Pressure (GPa)")
@@ -196,40 +210,34 @@ class MyEOS:
   Ts = sorted (list(EOS.keys()) )
   PP = [ float(EOS[Ti][0](r))  for Ti in  Ts ]
   EE = [ float(EOS[Ti][1](r))  for Ti in  Ts ]
-  # Clean zeros of the list
+  # Clean zeros of the list caused by InterpolatedUnivariateSpline with ext=1 (no extrapolation)
   Ts = [ Ts[i] for i in range(len(PP)) if PP[i]>0 ]
   EE = [ EE[i] for i in range(len(PP)) if PP[i]>0 ]
   PP = [ PP[i] for i in range(len(PP)) if PP[i]>0 ]
 
   if plot:
-   #ax5.plot(array(Ts)*0+r,Ts,'o')
-   #ax5.plot(PP,Ts,'o')
-   #ax5.plot(EE,Ts,'o-', mec='k')
-   ax5.plot(EE,PP,'o', mec='k', label='rho='+str(r))
-  #for i in range(len(PP)):   print ("rho=",r,"T=",Ts[i], "P=",PP[i],"E=",EE[i])
-  #order = 2 if len(Ts)<4 else 3
-  #Spl_p = InterpolatedUnivariateSpline(Ts, PP, ext=1, k=order)        # P(T) for rho= r. FIXME: Allow extrapolations (ext=0)
-  #Spl_e = InterpolatedUnivariateSpline(Ts, EE, ext=1, k=order)        # P(T) for rho= r. FIXME: Allow extrapolations (ext=0)
-  #ax5.plot(Ts,PP,'s-', label=str(r))
-  #P_at_Tr = float(Spl_p(T))                                  # P at T for rho= r
-  #E_at_Tr = float(Spl_e(T))                                  # E at T for rho= r
-  #print ("At T=",T,"for rho=",r,", P=",P_at_Tr, "Isotherms:",Ts) #, "Ps=",PP)
-  #ax5.plot( [E_at_Tr],[P_at_Tr],'ks-',ms=10, mec='k')
+    ax5.plot(EE,PP,'o-',  mec='k', ms=10, zorder=1, label='rho='+str(r))
 
   # Compare with linear fit
   try:
    linear_fit =  lambda x,A,B: A*x+B
    popt,popv = curve_fit(linear_fit, EE, PP)              # K/rho = dP/drho is pretty linear with rho
    if plot:
-    ax5.plot(EE,PP,'r--')
+    ee = linspace(0.9*min(EE),1.1*max(EE),100)
+    ax5.plot(ee,linear_fit(ee, *popt),'--', c='grey', zorder=-5)
     legend()
   except:
    return 0.0
 
   A,B = popt[0],popt[1]
-  V = one_iron_u_angstrom3_gcc/r 
-  dPdU_V = A
-  return V*dPdU_V*0.0062415091 # GPa/eV * A3
+  v =   EOS[Ts[0]][-1][1][0]   # EOS[T][-1] = N,v,r,... --> EOS[T][-1][1] = v --> EOS[T][-1][1][0] = v0
+  rho = EOS[Ts[0]][-1][2][0]   # EOS[T][-1] = N,v,r,... --> EOS[T][-1][2] = r --> EOS[T][-1][2][0] = rho0
+  mass = rho*v # in A3 * g/cc
+  V = mass/r
+  GPa_over_eV_to_A3 =  0.0062415091    # in GPa/eV  * A3
+  dPdU_V = A * GPa_over_eV_to_A3       # leaves 1/A3
+  gam = V*dPdU_V
+  return gam  # GPa/eV * A3
 
   #try:
   # Spl_rho = InterpolatedUnivariateSpline(Plist, rho, ext=1)  # V(P)
@@ -260,14 +268,21 @@ print (MyEOS.GruneisenParameter(14))
 exit()
 """
 
+def f(x, a,b):
+ return a*x+b
+#=====================================  END OF FUNCTIONS =============================================================================#
+#=====================================================================================================================================#
+
+
+# =============================================================================
+#    MAIN SCRIPT ENTRY POINT
+# =============================================================================
 
 #rho0, T0 = 10.9040, 6000 
 #MyEOS.Energy(15,6000)
 #MyEOS.Press(10.9040,6000)
 
 
-def f(x, a,b):
- return a*x+b
 
 fig = figure(1)
 ax = subplot(111)
@@ -275,18 +290,89 @@ ax = subplot(111)
 rho0= 15
 Ts = sorted ( list(EOS.keys()) )
 e = [ MyEOS.Energy(rho0,T)  for T in Ts ]
-p = [ MyEOS.Press(rho0,T)   for T in Ts ]
+P = [ MyEOS.Press(rho0,T)   for T in Ts ]
+ax.plot(e,P, 'o-', mec='k')
 
-#N,v,r,t,p,e = EOS[10000][-1]
-ax.plot(e,p, 'o-', mec='k')
-
-popt, pcov = curve_fit(f, e,p)
+# Fitting P(e) with linear fit
+popt, pcov = curve_fit(f, e,P)
 ee = linspace(min(e),max(e),100)
 ax.plot(ee, f(ee, *popt))
-print("rho0=", rho0, "Gamma/V[1/A^3]=", popt[0]*0.0062415091 )
-print("rho0=", rho0, "Gamma/V *8.3=", popt[0]*0.0062415091 * 8.37386944)
-#print (MyEOS.Volume(rho0,10000))
-print (EOS[10000][-1])
 
-#savefig('one.ong')
+print("rho0=", rho0, "Gamma/V[1/A^3]=", popt[0]*0.0062415091 )
+print("rho0=", rho0, "Gamma=", popt[0]*0.0062415091 * one_iron_u_angstrom3_gcc/rho0)
+#print (MyEOS.Volume(rho0,10000))
+
+#n = 5
+#col = cm.coolwarm(np.linspace(0.0,1.00,n))
+#for rhoi in linspace(14,18,10):
+# gamma = MyEOS.GruneisenParameter(rhoi, plot=True)
+# v0 =   EOS[Ts[0]][-1][1][0]   # EOS[T][-1] = N,v,r,t,p,e --> EOS[T][-1][1] = v --> EOS[T][-1][1][0] = v0
+# rho0 = EOS[Ts[0]][-1][2][0]   # EOS[T][-1] = N,v,r,t,p,e --> EOS[T][-1][2] = r --> EOS[T][-1][2][0] = rho0
+# mass = rho0*v0 # in A3 * g/cc
+# V = mass/rhoi
+# Pmax = MyEOS.Press( max(EOS[min(Ts)][-1][2]) , min(Ts) ) 
+# Pmin = MyEOS.Press( min(EOS[min(Ts)][-1][2]) , min(Ts) ) 
+# print( "rho[g/cc]= %8.4f   V[A3/atom]= %8.4f   Pmin[GPa]= %8.4f  Pmax[GPa]= %8.4f   gamma/V[1/A3]= %8.4f   gamma= %8.4f"  % (rhoi, V, Pmin, Pmax, gamma/V, gamma)  )
+
+
+fig2 = figure(r'Pth vs Eth')
+ax2= subplot(111)
+ax2.set_xlabel('Density (g/cc)') 
+ax2.set_ylabel(r'$P_{\rm th}/E_{\rm th}$') 
+
+#col     = [ 'g', 'r', 'b', 'k' ]
+#col     = [ '#ffca3a', '#ff595e', 'b', '#8ac926' ]
+col     = [ '#47E647', '#6E2594', '#0008FF', '#000000' ]
+marker  = [ 'v', 'd', 'o', 's']
+#ms      = [12,12,10,10 ,12,12,10,10]
+
+
+
+# TESTING PLOT ∆P vs ∆E:
+T0 = Ts[0]  #  reference isotherm
+rhos = EOS[T0][-1][2] 
+rhos = linspace(15,17, 5)
+for j,T1 in enumerate(Ts[1:]):
+ #T1 = Ts[3]  #  higher T isotherm
+ Pref = array([ MyEOS.Press(r, T0)  for r in rhos ])
+ Eref = array([ MyEOS.Energy(r, T0) for r in rhos ])
+ P    = array([ MyEOS.Press(r, T1)  for r in rhos ])
+ E    = array([ MyEOS.Energy(r, T1) for r in rhos ])
+ #print ("At T0=",T0,"P=",Pref)
+ #print ("At T1=",T1,"P=",P   )
+ GPa_over_eV_to_A3 =  0.0062415091    #  GPa/eV  * A3 = 0.0062415091
+ dPdU_V =  (P-Pref)/(E-Eref) *GPa_over_eV_to_A3  # in 1/A3
+ ax2.plot(rhos, dPdU_V , '-', c=col[j], marker=marker[j], mec='k',  ms=12, label=str(T1)+' K')
+
+ print("#Along T[K]=",T1)
+ v0 =   EOS[Ts[0]][-1][1][0]   # EOS[T][-1] = N,v,r,t,p,e --> EOS[T][-1][1] = v --> EOS[T][-1][1][0] = v0
+ rho0 = EOS[Ts[0]][-1][2][0]   # EOS[T][-1] = N,v,r,t,p,e --> EOS[T][-1][2] = r --> EOS[T][-1][2][0] = rho0
+ mass = rho0*v0 # in A3 * g/cc
+ V = mass/rhos
+ print(V)
+
+ax2.plot(rhos, 0*rhos+0.21, 'k--', label='0.21 /$\AA^3$')
+legend()
+ax2.set_ylim(0,0.6)
+#savefig('Pth_vs_Eth_v1.png')
+
+
+
+fig6 = figure('Comparison with Mie Gruneisen')
+ax6= subplot(111)
+rho0 = 15
+pressures=  array([ MyEOS.Press(rho0, Ti)  for Ti in Ts ])
+energies =  array([ MyEOS.Energy(rho0, Ti)  for Ti in Ts ])
+print(pressures)
+print(energies)
+ax6.plot(energies, pressures, 'o-', label='Original data at rho[g/cc]='+str(rho0) )
+ee = linspace(min(energies),max(energies), 100)
+e0 = energies[0]
+p0 = pressures[0]
+ax6.plot(ee, (0.19 * 160.21766 )*(ee - e0)+p0  , '-' , label='Mie Gruneisen')
+legend()
+ax6.set_xlabel('Energy (eV/atom)') 
+ax6.set_ylabel(r'Pressure (GPa)') 
+
+#savefig('P_vs_E_comparison_v1.png')
 show()
