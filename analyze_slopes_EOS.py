@@ -65,12 +65,12 @@ for f in list_of_files[:]:
   #print ("This file ", f , "is the entire EOS")
   t = data[:,3]  # All t's are the same. Take the 1st.
  N = data[:,0]
- v = data[:,1]/N
+ v = data[:,1] #/N    # Don't normalize volume per atom for EOS table that come in formula units
  r = data[:,2]
  p = data[:,4]
  perr = data[:,5]
- e = data[:,6]/N*27.211386  # Ha to eV
- eerr = data[:,7]/N*27.211386  # Ha to eV
+ e = data[:,6]*27.211386    /N  # Ha to eV
+ eerr = data[:,7]*27.211386 /N  # Ha to eV
  
  #FIXME: Interpolation that returns zero= 0 for densities out of range
  if isinstance(t, float):  # If the file is just an isotherm
@@ -312,57 +312,75 @@ def f(x, a,b):
 #MyEOS.Press(10.9040,6000)
 
 
-
-fig = figure(1)
-ax = subplot(111)
-
 rho0= 15
 Ts = sorted ( list(EOS.keys()) )
-e = [ MyEOS.Energy(rho0,T)  for T in Ts ]
-P = [ MyEOS.Press(rho0,T)   for T in Ts ]
-ax.plot(e,P, 'o-', mec='k')
 
-# Fitting P(e) with linear fit
-popt, pcov = curve_fit(f, e,P)
-ee = linspace(min(e),max(e),100)
-ax.plot(ee, f(ee, *popt))
-
-print("rho0=", rho0, "Gamma/V[1/A^3]=", popt[0]*0.0062415091 )
-print("rho0=", rho0, "Gamma=", popt[0]*0.0062415091 * one_iron_u_angstrom3_gcc/rho0)
-#print (MyEOS.Volume(rho0,10000))
-
-#n = 5
-#col = cm.coolwarm(np.linspace(0.0,1.00,n))
-#for rhoi in linspace(14,18,10):
-# gamma = MyEOS.GruneisenParameter(rhoi, plot=True)
-# v0 =   EOS[Ts[0]][-1][1][0]   # EOS[T][-1] = N,v,r,t,p,e --> EOS[T][-1][1] = v --> EOS[T][-1][1][0] = v0
-# rho0 = EOS[Ts[0]][-1][2][0]   # EOS[T][-1] = N,v,r,t,p,e --> EOS[T][-1][2] = r --> EOS[T][-1][2][0] = rho0
-# mass = rho0*v0 # in A3 * g/cc
-# V = mass/rhoi
-# Pmax = MyEOS.Press( max(EOS[min(Ts)][-1][2]) , min(Ts) ) 
-# Pmin = MyEOS.Press( min(EOS[min(Ts)][-1][2]) , min(Ts) ) 
-# print( "rho[g/cc]= %8.4f   V[A3/atom]= %8.4f   Pmin[GPa]= %8.4f  Pmax[GPa]= %8.4f   gamma/V[1/A3]= %8.4f   gamma= %8.4f"  % (rhoi, V, Pmin, Pmax, gamma/V, gamma)  )
+#fig = figure(1)
+#ax = subplot(111)
+#
+#e = [ MyEOS.Energy(rho0,T)  for T in Ts ]
+#P = [ MyEOS.Press(rho0,T)   for T in Ts ]
+#ax.plot(e,P, 'o-', mec='k')
+#
+## Fitting P(e) with linear fit
+#popt, pcov = curve_fit(f, e,P)
+#ee = linspace(min(e),max(e),100)
+#ax.plot(ee, f(ee, *popt))
+#
+#print("rho0=", rho0, "Gamma/V[1/A^3]=", popt[0]*0.0062415091 )
+#print("rho0=", rho0, "Gamma=", popt[0]*0.0062415091 * one_iron_u_angstrom3_gcc/rho0)
+##print (MyEOS.Volume(rho0,10000))
+#
+##n = 5
+##col = cm.coolwarm(np.linspace(0.0,1.00,n))
+##for rhoi in linspace(14,18,10):
+## gamma = MyEOS.GruneisenParameter(rhoi, plot=True)
+## v0 =   EOS[Ts[0]][-1][1][0]   # EOS[T][-1] = N,v,r,t,p,e --> EOS[T][-1][1] = v --> EOS[T][-1][1][0] = v0
+## rho0 = EOS[Ts[0]][-1][2][0]   # EOS[T][-1] = N,v,r,t,p,e --> EOS[T][-1][2] = r --> EOS[T][-1][2][0] = rho0
+## mass = rho0*v0 # in A3 * g/cc
+## V = mass/rhoi
+## Pmax = MyEOS.Press( max(EOS[min(Ts)][-1][2]) , min(Ts) ) 
+## Pmin = MyEOS.Press( min(EOS[min(Ts)][-1][2]) , min(Ts) ) 
+## print( "rho[g/cc]= %8.4f   V[A3/atom]= %8.4f   Pmin[GPa]= %8.4f  Pmax[GPa]= %8.4f   gamma/V[1/A3]= %8.4f   gamma= %8.4f"  % (rhoi, V, Pmin, Pmax, gamma/V, gamma)  )
 
 
 
 
 # =============================================================================
-#    ∆P / ∆E  as a function of density
+#    PLOT ∆P / ∆E  as a function of density
 # =============================================================================
+fig_size = [700/72.27 ,750/72.27]
+params = { 'figure.figsize': fig_size }
+rcParams.update(params)
+
 fig2 = figure(r'Pth vs Eth')
-ax2= subplot(111)
-ax2.set_xlabel('Density (g/cc)') 
-ax2.set_ylabel(r'$P_{\rm th}/E_{\rm th}$ (1/$\AA^3$)') 
+ax= subplot(111)
+ax.set_xlabel('Density (g/cc)') 
+ax.set_ylabel(r'$P_{\rm th}/E_{\rm th}$ (1/$\AA^3$)') 
+#ax2= subplot(211)
+#ax3= subplot(212)
+#ax3.set_xlabel('Volume ($\AA^3$/f.u.)') 
+#ax3.set_ylabel('$\gamma$') 
+#ax2.set_ylabel(r'$P_{\rm th}/E_{\rm th}$ (1/$\AA^3$)') 
+
+#minorYLocator = MultipleLocator(0.1)
+#minorXLocator = MultipleLocator(0.2)
+#ax2.yaxis.set_minor_locator(minorYLocator)
+#ax2.xaxis.set_minor_locator(minorXLocator)
+#ax2.xaxis.set_ticks_position('both')
+#ax2.yaxis.set_ticks_position('both')
+#minorYLocator = MultipleLocator(0.02)
+#ax3.yaxis.set_minor_locator(minorYLocator)
+#ax3.xaxis.set_minor_locator(minorXLocator)
+#ax3.xaxis.set_ticks_position('both')
+#ax3.yaxis.set_ticks_position('both')
+
 
 #col     = [ 'g', 'r', 'b', 'k' ]
 #col     = [ '#ffca3a', '#ff595e', 'b', '#8ac926' ]
-col     = [ '#47E647', '#6E2594', '#0008FF', '#000000' ]
-marker  = [ 'v', 'd', 'o', 's', '*', 'H', 'D', '^']
+col     = [ '#47E647', '#6E2594', '#0008FF', '#000000' , '#ffca3a', '#ff595e', 'b', '#8ac926', 'yellow']
+marker  = [ 'v', 'd', 'o', 's', '*', 'H', '^', 'D', '>']
 #ms      = [12,12,10,10 ,12,12,10,10]
-
-num_curves=len(Ts)
-col = cm.viridis(np.linspace(1.0, 0.0, num_curves))
-print("NUM CURVES:",num_curves)
 
 
 # TESTING PLOT ∆P vs ∆E:
@@ -371,15 +389,25 @@ print("REFERENCE ISOTHERM: T0[K]=",T0)
 #rhos = EOS[T0][-1][2] 
 #rhos = linspace(15,17, 5)
 rhos = EOS[T0][-1][2]    # EOS[T0] =  (N,v,r,t,p,e, perr, err)
-for j,T1 in enumerate(Ts[1:]):
- print("T1=",T1)
+Temp_list = Ts[1::2]
+num_curves=len(Temp_list)
+#col = cm.viridis(np.linspace(0.0, 1.0, num_curves))
+v0   = EOS[T0][-1][1][0]
+rho0 = EOS[T0][-1][2][0]
+from_gccA3_to_amu = 0.60221408
+#mass = rho0*v0 * from_gccA3_to_amu # in amu
+mass = rho0*v0                     # in (g/cc) * A^3
+#V = mass/rhos
+
+
+for j,T1 in enumerate(Temp_list):
  ##T1 = Ts[3]  #  higher T isotherm
  #Pref = array([ MyEOS.Press(r, T0)  for r in rhos ])
  #Eref = array([ MyEOS.Energy(r, T0) for r in rhos ])
  #P    = array([ MyEOS.Press(r, T1)  for r in rhos ])
  #E    = array([ MyEOS.Energy(r, T1) for r in rhos ])
 
- Pref = EOS[T0][-1][4];  Pref_err = EOS[T0][-1][6] 
+ Pref = EOS[T0][-1][4];  Pref_err = EOS[T0][-1][6]   # EOS[T0][-1] = (N,v,r,t,p,e,perr,eerr) 
  Eref = EOS[T0][-1][5];  Eref_err = EOS[T0][-1][7] 
  P    = EOS[T1][-1][4];  Perr =     EOS[T1][-1][6]
  E    = EOS[T1][-1][5];  Eerr =     EOS[T1][-1][7]
@@ -395,65 +423,93 @@ for j,T1 in enumerate(Ts[1:]):
  #print ("At T0=",T0,"P=",Pref)
  #print ("At T1=",T1,"P=",P   )
  GPa_over_eV_to_A3 =  0.0062415091    #  GPa/eV  * A3 = 0.0062415091
- dPdU_V =  (P-Pref)/(E-Eref) *GPa_over_eV_to_A3  # in 1/A3
+ dPdU_V =  (P-Pref)/(E-Eref) *GPa_over_eV_to_A3  # dPdU in 1/A3 now
  A = (P-Pref) 
  dA = sqrt( Perr*Perr + Pref_err*Pref_err )
  B = (E-Eref)
  dB = sqrt( Eerr*Eerr + Eref_err*Eref_err )
  dPdU_V_err =  dPdU_V *  sqrt( ( dA/A )*( dA/A )  + ( dB/B )*( dB/B )  )
- dPdU_V = dPdU_V[ rhos_f != 34.444013]
- rhos_f = rhos_f[ rhos_f != 34.444013]
+
+ #---- Exclude problematic points -----#
+ # MgO EOS
+ exclude = [34.444013]
+ if T1< 51000:
+  exclude += [32.128705, 35.698560, 39.268422,  42.838281]
+ mask = ~np.isin(rhos_f, exclude)
+ rhos_f = rhos_f[mask]
+ dPdU_V = dPdU_V[mask]
+ dPdU_V_err = dPdU_V_err[mask]
+ #-------------------------------------#
+ 
+
  label_T1 = str(int(T1/1000))
- ax2.plot(rhos_f, dPdU_V , '-', c=col[j%len(col)], marker=marker[j%len(marker)], mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
- #ax2.errorbar(rhos, dPdU_V, dPdU_V_err, c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=str(T1)+' K')
+ #ax.plot(rhos_f, dPdU_V , '-', c=col[j%len(col)], marker=marker[j%len(marker)], mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
+ eplot = ax.errorbar(rhos_f, dPdU_V, dPdU_V_err, fmt='o', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
+ linear_fit =  lambda x, a,b: a*x+b
+ popt,popv = curve_fit(linear_fit, rhos_f, dPdU_V)              # K/rho = dP/drho is pretty linear with rho
+ c = eplot[0].get_color()
+ rr = linspace(min(rhos_f),max(rhos_f),100)
+ ax.plot(rr, linear_fit(rr, *popt), '-', color=c)
+ slope = popt[0] * 1.6605391  #  (1/angstrom^3) /(g/cc) =  1.6605391 (1/amu)
+ intercept =  popt[1]
 
- #v0 =   EOS[Ts[0]][-1][1][0]   # EOS[T][-1] = N,v,r,t,p,e --> EOS[T][-1][1] = v --> EOS[T][-1][1][0] = v0
- #rho0 = EOS[Ts[0]][-1][2][0]   # EOS[T][-1] = N,v,r,t,p,e --> EOS[T][-1][2] = r --> EOS[T][-1][2][0] = rho0
- #mass = rho0*v0 # in A3 * g/cc
- #V = mass/rhos
+ #ax2.errorbar(mass/rhos_f, dPdU_V, dPdU_V_err, fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
+ #ax3.errorbar(mass/rhos_f, dPdU_V * (mass/rhos_f), dPdU_V_err * (mass/rhos_f), fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12) #, label=label_T1+ str( r'$\times10^3$ K' ))
 
-#ax2.plot(rhos, 0*rhos+0.21, 'k--', label='0.21 /$\AA^3$')
-legend(loc=2,fontsize=12)
-#ax2.set_ylim(0,0.6)
+
+ #print("# T[K]=",T1)
+ print("T1[K]= %9.0f  slope(Pth/Eth)_vs_rho[1/amu]= %8.4f  intercept[1/A3]= %8.4f"  % (T1, slope, intercept ) )
+ #for j in range(len(rhos_f)):
+ # gamma = dPdU_V[j] * (mass/rhos_f[j])
+ # print("T1[K]= %8.0f  rho[g/cc]= %8.4f   slope(Pth/Eth)_vs_rho[1/amu]= %8.4f  gamma/V[1/A^3]= %8.4f    gamma= %8.4f"  % (T1, rhos_f[j], slope, dPdU_V[j] , gamma) )
+
+#ax.plot(rhos, 0*rhos+0.21, 'k--', label='0.21 /$\AA^3$')
+#ax2.legend(loc=2,fontsize=18)
+#setp(ax2.get_xticklabels(),visible=False)
+#subplots_adjust(hspace=0)
+#ax.set_ylim(0,0.6)
 #savefig('Pth_vs_Eth_v1.png')
+#savefig('Pth_vs_Eth_v2.png')
+#savefig('Pth_vs_Eth_v3.png')
 
 
-# =============================================================================
-#    P(E) vs P_MieGruneisen(E) 
-# =============================================================================
-fig6 = figure('Comparison with Mie Gruneisen')
-ax6= subplot(111)
-rho0 = 15
-for rho0 in [15]: #rhos_f[::2]:
- pressures=  array([ MyEOS.Press(rho0, Ti)  for Ti in Ts ])
- energies =  array([ MyEOS.Energy(rho0, Ti)  for Ti in Ts ])
- energies += 10000
- #p,= ax6.plot(energies, pressures, 'o', mec='k', ms=10) 
- p, = ax6.plot(energies, pressures, 'o', mec='k', ms=10, label='Original data at rho[g/cc]='+str(rho0) )
- ee = linspace(min(energies),max(energies), 1000)
- e0 = energies[0]
- p0 = pressures[0]
- c = p.get_color()
- #ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , color=c)
- ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , color=c, label='Original data at rho[g/cc]='+str(rho0) )
-#ax6.plot(energies, pressures, 'o-', label='Original data at rho[g/cc]='+str(rho0) )
-#ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , label='Mie Gruneisen')
-legend()
-ax6.set_xlabel('Energy (eV/atom)') 
-ax6.set_ylabel(r'Pressure (GPa)') 
-ax6.set_yscale('log')
-ax6.set_xscale('log')
 
-#savefig('P_vs_E_comparison_v1.png')
-savefig('P_vs_E_comparison_v2.png')
-#ax6.plot(energies, pressures, 'o-', label='Original data at rho[g/cc]='+str(rho0) )
-#ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , label='Mie Gruneisen')
-legend()
-ax6.set_xlabel('Energy (eV/atom)') 
-ax6.set_ylabel(r'Pressure (GPa)') 
-ax6.set_yscale('log')
-ax6.set_xscale('log')
-
-#savefig('P_vs_E_comparison_v1.png')
-#savefig('P_vs_E_comparison_v2.png')
+## =============================================================================
+##    P(E) vs P_MieGruneisen(E) 
+## =============================================================================
+#fig6 = figure('Comparison with Mie Gruneisen')
+#ax6= subplot(111)
+#rho0 = 15
+#for rho0 in [15]: #rhos_f[::2]:
+# pressures=  array([ MyEOS.Press(rho0, Ti)  for Ti in Ts ])
+# energies =  array([ MyEOS.Energy(rho0, Ti)  for Ti in Ts ])
+# energies += 10000
+# #p,= ax6.plot(energies, pressures, 'o', mec='k', ms=10) 
+# p, = ax6.plot(energies, pressures, 'o', mec='k', ms=10, label='Original data at rho[g/cc]='+str(rho0) )
+# ee = linspace(min(energies),max(energies), 1000)
+# e0 = energies[0]
+# p0 = pressures[0]
+# c = p.get_color()
+# #ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , color=c)
+# ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , color=c, label='Original data at rho[g/cc]='+str(rho0) )
+##ax6.plot(energies, pressures, 'o-', label='Original data at rho[g/cc]='+str(rho0) )
+##ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , label='Mie Gruneisen')
+#legend()
+#ax6.set_xlabel('Energy (eV/atom)') 
+#ax6.set_ylabel(r'Pressure (GPa)') 
+#ax6.set_yscale('log')
+#ax6.set_xscale('log')
+#
+##savefig('P_vs_E_comparison_v1.png')
+##savefig('P_vs_E_comparison_v2.png')
+##ax6.plot(energies, pressures, 'o-', label='Original data at rho[g/cc]='+str(rho0) )
+##ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , label='Mie Gruneisen')
+#legend()
+#ax6.set_xlabel('Energy (eV/atom)') 
+#ax6.set_ylabel(r'Pressure (GPa)') 
+#ax6.set_yscale('log')
+#ax6.set_xscale('log')
+#
+##savefig('P_vs_E_comparison_v1.png')
+##savefig('P_vs_E_comparison_v2.png')
 show()
