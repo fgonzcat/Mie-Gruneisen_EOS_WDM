@@ -895,6 +895,21 @@ def P_vs_T():
   E0 = EOS[T0]['E'][ all_rhosT0 ][0] + Eshift
   P0 = EOS[T0]['P'][ all_rhosT0 ][0]  
   linear_fit = lambda e: P0 + (gamma0/V0) *160.21766 *(e - E0)
+  # I think this function should be
+  # P(V,T) = P(V,T0) + (dP/dE)_V [ E(V,T)-E(V,T0) ] + 1/2 (d^2 P/dE^2) [ E(V,T)-E(V,T0) ]^2
+  #        = P(V,T0) +   gamma/V [ E(V,T)-E(V,T0) ] + 1/2V (d gamma/dE) [ E(V,T)-E(V,T0) ]^2
+  # Since I fitted  ∆P/∆E = a(T)rho + b(T), I have
+  #   ∆P/∆E =  a(T)rho + b(T) =  gamma/V  + 1/2V (d gamma/dE) ∆E
+  # so
+  # gamma(V,T) + 1/2 (d gamma/dE) ∆E = V [  a(T)rho + b(T) ]  
+  # x= E - E0 = ∆E --> dx = dE
+  # --> f(x) + 1/2 f'(x) = a(T)*m + b(T)*V 
+  # --> 2 f(x)*exp(2x) + f'(x)*exp(2x) = 2 [ a(T)*m + b(T)*V ] *exp(2x)
+  # --> d [ exp(2x)f(x) ]/dx = 2 [ a(T)*m + b(T)*V ] *exp(2x)
+  # --> exp(2x) f(x) - f(0) = 2 [ a(T)*m + b(T)*V ] [ exp(2x)/2 - 1/2]
+  # --> f(x) = exp(-2x)f(0) +  2 [ a(T)*m + b(T)*V ] [ 1/2 - exp(-2x)/2]
+  # --> gamma(E) = exp(-2x)gamma(E0) +  2 [ a(T)*m + b(T)*V ] [ 1/2 - exp(-2 ∆E )/2]
+
   doubly_linear_fit = lambda e,T:  P0 + (Gamma_Fit(V0,T)/V0) *160.21766 *(e - E0)
   
   Pth_MG = []
