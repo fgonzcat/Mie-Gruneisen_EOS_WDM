@@ -313,9 +313,63 @@ print (MyEOS.Volume(474.91586697361384,7800))
 print (MyEOS.GruneisenParameter(14))
 exit()
 """
-
-#=====================================  END OF FUNCTIONS =============================================================================#
+#=====================================  END OF EOS CLASS =============================================================================#
 #=====================================================================================================================================#
+
+
+
+# =============================================================================
+#    FITTED GRUNEISEN PARAMETER TO MgO EOS
+# =============================================================================
+# I basically took Pth/Eth at all the different volumes I had to get the difference between the T0=20000 K isotherm
+# and the isotherm at temperature T. This function (Pth/Eth)(V) is fitted as a function of density for each temperature independently.
+# Thus, (Pth/Eth)(V,T) =  gamma(V,T)/V   =  a(T)*m + b(T)*V 
+Ts = sorted ( list(EOS.keys()) )
+_AB_TABLE = {
+20000 : ( 0.015515680845572965 ,  0.02333629418195489 ),
+30000 : ( 0.015515680845572965 ,  0.02333629418195489 ),
+40000 : ( 0.014695058509524236 ,  0.02539026297966505 ),
+50000 : ( 0.015067383613662872 ,  0.02150298839421195 ),
+100000 : ( 0.01632153142023388 ,  0.006234936676929329 ),
+250000 : ( 0.01722076639526805 ,  -0.017627837966963534 ),
+500000 : ( 0.01730907132504885 ,  -0.02477565944003577 ),
+750000 : ( 0.017345530419509893 ,  -0.025699540449872004 ),
+1010479 : ( 0.017352478837787327 ,  -0.025106829073152766 ),
+1347305 : ( 0.017062557670449185 ,  -0.022392888009936416 ),
+2020958 : ( 0.015141732805558788 ,  -0.013075350474981698 ),
+4041916 : ( 0.01460150286357319 ,  -0.010775456950342786 ),
+8083831 : ( 0.014244632671272846 ,  -0.0066469114393760634 ),
+16167663 : ( 0.01483232489553656 ,  -0.0020825905047453346 ),
+32335325 : ( 0.015557203206506548 ,  -0.0007479104213895064 ),
+64670651 : ( 0.016012379831085586 ,  -0.00030457523673943433 ),
+129341301 : ( 0.01626503500340532 ,  -0.0001268247842934055 ),
+258682602 : ( 0.016398987749328083 ,  -5.159096364469834e-05 ),
+517365204 : ( 0.01646872235894715 ,  -2.2023244165113643e-05 )
+}
+
+
+
+mass = EOS[Ts[0]]['mass']  # in  (g/cc) *A^3
+def Gamma_Fit(V,T):
+ # ensure we use integer keys consistently
+ Tkey = int(T)
+ try:
+     a, b = _AB_TABLE[Tkey]
+ except KeyError as exc:
+     raise KeyError(f"Temperature {T} not found in table. "
+                    f"Available temperatures: {sorted(_AB_TABLE.keys())}") from exc
+
+ V_arr = np.asarray(V)
+ result = a*(mass*from_gccA3_to_amu)  + b * V_arr
+ # return scalar if input was scalar
+ return result.item() if np.isscalar(V) else result
+
+#T0=30000
+#V0=EOS[T0]['V'][-1]
+#print("GAMMA FIT at V0=", V0," and 20000K is", Gamma_Fit(V0,T0 ))
+
+
+
 
 
 # =============================================================================
@@ -331,19 +385,74 @@ rho0, T0 = 7.139711, 20000
 
 Ts = sorted ( list(EOS.keys()) )
 
-def P_vs_E(rho0):
+def P_vs_E(rho0=15):
  fig = figure('P_vs_E')
  ax = subplot(111)
  
- e = [ MyEOS.Energy(rho0,T)  for T in Ts ]
- P = [ MyEOS.Press(rho0,T)   for T in Ts ]
- ax.plot(e,P, 'o-', mec='k')
+ #e = [ MyEOS.Energy(rho0,T)  for T in Ts ]
+ #P = [ MyEOS.Press(rho0,T)   for T in Ts ]
+
+ T0 = 20000
+ #rho0 = 15
+ #rhos = EOS[T0][-1][2]    # EOS[T0] =  (N,v,r,t,p,e, perr, err)
+ rhos = EOS[T0]['rho']
+ V0s  = EOS[T0]['V']
+ rhos = delete(rhos,[1,9,11])  # Not all rhos at 20000 K get to PIMC temperatures
+ V0s = delete(V0s,[1,9,11])  # Not all rhos at 20000 K get to PIMC temperatures
+ energies = []
+ energiesE= []
+ pressures = []
+ pressuresE= []
+ temperatures = []
+ rhos=EOS[T0]['rho']
+ for j,rho0 in enumerate(rhos[:2]): #rhos_f[::2]:
+  energies = []
+  energiesE= []
+  pressures = []
+  pressuresE= []
+  temperatures = []
+  for ti in Ts[0:11]:
+   #V0 = mass/rho0
+   print("ACA PA rho0=",rho0,"ti=",ti)
+   V0 = V0s[j]
+   Ps =  EOS[ti]['P']
+   PsE=  EOS[ti]['Perr']
+   Es =  EOS[ti]['E']
+   EsE=  EOS[ti]['Eerr']
+   Vs =  EOS[ti]['V']
+   t0 =  EOS[ti]['T']
+   P0 = Ps[  Vs==V0 ][0]  # just one value: P(rho0,ti) 
+   P0E= PsE[ Vs==V0 ][0]  # just one value: P(rho0,ti) 
+   E0 = Es[  Vs==V0 ][0]  # just one value: P(rho0,ti) 
+   E0E= EsE[ Vs==V0 ][0]  # just one value: P(rho0,ti) 
+   energies  += [ E0 ]
+   energiesE += [ E0E]
+   pressures += [ P0 ]
+   pressuresE+= [ P0E]
+   temperatures += [ t0 ]
+
+
+
+ print("LISTA P:",pressures)
+ print("LISTA E:",energies)
+ print("LISTA T:",temperatures)
+
  
  # Fitting P(e) with linear fit
- linear_fit = lambda x, a,b: a*x+b
- popt, pcov = curve_fit(linear_fit, e,P)
- ee = linspace(min(e),max(e),100)
- ax.plot(ee, linear_fit(ee, *popt))
+ #linear_fit = lambda x, a,b: a*x+b
+ #popt, pcov = curve_fit(linear_fit, e,P)
+ #ee = linspace(min(e),max(e),100)
+ #ax.plot(ee, linear_fit(ee, *popt))
+ 
+ #print("rho0=", rho0, "Gamma/V[1/A^3]=", popt[0]*0.0062415091 )
+ #print("rho0=", rho0, "Gamma=", popt[0]*0.0062415091 * one_iron_u_angstrom3_gcc/rho0)
+ ax.plot(energies,pressures, 'o-', mec='k')
+ 
+ # Fitting P(e) with linear fit
+ #linear_fit = lambda x, a,b: a*x+b
+ #popt, pcov = curve_fit(linear_fit, e,P)
+ #ee = linspace(min(e),max(e),100)
+ #ax.plot(ee, linear_fit(ee, *popt))
  
  #print("rho0=", rho0, "Gamma/V[1/A^3]=", popt[0]*0.0062415091 )
  #print("rho0=", rho0, "Gamma=", popt[0]*0.0062415091 * one_iron_u_angstrom3_gcc/rho0)
@@ -360,6 +469,7 @@ def P_vs_E(rho0):
  # Pmax = MyEOS.Press( max(EOS[min(Ts)][-1][2]) , min(Ts) ) 
  # Pmin = MyEOS.Press( min(EOS[min(Ts)][-1][2]) , min(Ts) ) 
  # print( "rho[g/cc]= %8.4f   V[A3/atom]= %8.4f   Pmin[GPa]= %8.4f  Pmax[GPa]= %8.4f   gamma/V[1/A3]= %8.4f   gamma= %8.4f"  % (rhoi, V, Pmin, Pmax, gamma/V, gamma)  )
+ ax.set_yscale('log')
 
 
 
@@ -487,7 +597,7 @@ def Pth_over_Eth_vs_density():
  #rhos = linspace(15,17, 5)
  #rhos = EOS[T0][-1][2]    # EOS[T0] =  (N,v,r,t,p,e, perr, err)
  rhos = EOS[T0]['rho']
- Temp_list = Ts[1::2]
+ Temp_list = Ts[1::]
  num_curves=len(Temp_list)
  #col = cm.viridis(np.linspace(0.0, 1.0, num_curves))
  #v0   = EOS[T0][-1][1][0]
@@ -550,7 +660,9 @@ def Pth_over_Eth_vs_density():
  
  
   #print("# T[K]=",T1)
-  print("T1[K]= %9.0f  slope(Pth/Eth)_vs_rho[1/amu]= %8.4f  intercept[1/A3]= %8.4f"  % (T1, slope, intercept ) )
+  #print("T1[K]= %9.0f  slope(Pth/Eth)_vs_rho[1/amu]= %8.4f  intercept[1/A3]= %8.4f"  % (T1, slope, intercept ) )
+  print(int(T1), ": (", slope, ", ", intercept, ")," )
+
   #for j in range(len(rhos_f)):
   # gamma = dPdU_V[j] * (mass/rhos_f[j])
   # print("T1[K]= %8.0f  rho[g/cc]= %8.4f   slope(Pth/Eth)_vs_rho[1/amu]= %8.4f  gamma/V[1/A^3]= %8.4f    gamma= %8.4f"  % (T1, rhos_f[j], slope, dPdU_V[j] , gamma) )
@@ -666,8 +778,19 @@ def P_vs_P_MG():
  
  #ax6.plot(energies, pressures, 'o-', label='Original data at rho[g/cc]='+str(rho0) )
  #ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , label='Mie Gruneisen')
- ax6.plot( EOS[T0]['E'], EOS[T0]['P'], 'ks-', mfc='w', mec='k',mew=1, ms=6 , zorder=10)
- ax6.plot( EOS[250000]['E'], EOS[250000]['P'], 'ko-', mfc='w', mec='k',mew=1, ms=6 , zorder=10)
+ T0 = 20000; T1=250000
+ E = EOS[T0]['E']
+ P = EOS[T0]['P']
+ E1= EOS[T1]['E']
+ P1= EOS[T1]['P']
+ E = delete(E,[1,9,11])  # Not all rhos at 20000 K get to PIMC temperatures
+ P = delete(P,[1,9,11])  # Not all rhos at 20000 K get to PIMC temperatures
+ E1= delete(E1,[1,9,11])  # Not all rhos at 20000 K get to PIMC temperatures
+ P1= delete(P1,[1,9,11])  # Not all rhos at 20000 K get to PIMC temperatures
+
+
+ ax6.plot( E, P, 'ks-', mfc='w', mec='k',mew=2, ms= 8, zorder=10)
+ ax6.plot(E1,P1, 'ko-', mfc='w', mec='k',mew=2, ms=10, zorder=10)
  #savefig('P_vs_E_comparison_v1.png')
  #savefig('P_vs_E_comparison_v2.png')
  #ax6.plot(energies, pressures, 'o-', label='Original data at rho[g/cc]='+str(rho0) )
@@ -683,10 +806,134 @@ def P_vs_P_MG():
  #savefig('P_vs_E_comparison_v3.png')
 
 
+
+
+
+
+# =============================================================================
+#    P(E) -  P_MieGruneisen(E) 
+# =============================================================================
+def P_vs_T():
+ fig_size = [700/72.27 ,750/72.27]
+ params = { 'figure.figsize': fig_size , 'figure.subplot.left': 0.150}
+ rcParams.update(params)
+ 
+ fig = figure('P_vs_E')
+ ax = subplot(211)
+ ax2= subplot(212)
+ markers = [ 'o', 's', '^', 'v', '>', '<', 'D', 'p', 'h', 'H', 'X', '*', 'P', 'd', '|'] 
+ colors = [
+     "#007F7F",  # teal
+     "#009999",  # cyan-green
+     "#3CB371",  # medium sea green
+     "#9ACD32",  # yellow-green
+     "#FFD700",  # gold
+     "#FFB347",  # light orange
+     "#FF7F50",  # coral
+     "#FF6347",  # tomato
+     "#FF4500",  # orange-red
+     "#E52B50",  # amaranth
+     "#B22222",  # firebrick
+     "#800000",  # maroon
+     "#5A0000",  # deep red-brown
+     "#3B0000",  # darker red
+     "#200000",  # near black-red
+ ]
+
+
+ 
+ #e = [ MyEOS.Energy(rho0,T)  for T in Ts ]
+ #P = [ MyEOS.Press(rho0,T)   for T in Ts ]
+
+ T0 = 20000
+ rhos = EOS[T0]['rho']
+ V0s  = EOS[T0]['V']
+ rhos = delete(rhos,[1,9,11])  # Not all rhos at 20000 K get to PIMC temperatures
+ V0s = delete(V0s,[1,9,11])  # Not all rhos at 20000 K get to PIMC temperatures
+ for j,rho0 in enumerate(rhos[:6]): #rhos_f[::2]:
+  energies = []
+  energiesE= []
+  pressures = []
+  pressuresE= []
+  temperatures = []
+  for ti in Ts[:11]:
+   #V0 = mass/rho0
+   V0 = V0s[j]
+   Ps =  EOS[ti]['P']
+   PsE=  EOS[ti]['Perr']
+   Es =  EOS[ti]['E']
+   EsE=  EOS[ti]['Eerr']
+   Vs =  EOS[ti]['V']
+   t0 =  EOS[ti]['T']
+   P0 = Ps[  Vs==V0 ][0]  # just one value: P(rho0,ti) 
+   P0E= PsE[ Vs==V0 ][0]  # just one value: P(rho0,ti) 
+   E0 = Es[  Vs==V0 ][0]  # just one value: P(rho0,ti) 
+   E0E= EsE[ Vs==V0 ][0]  # just one value: P(rho0,ti) 
+   energies  += [ E0 ]
+   energiesE += [ E0E]
+   pressures += [ P0 ]
+   pressuresE+= [ P0E]
+   temperatures += [ t0 ]
+  Eshift = 0*10000
+  energies = array(energies) + Eshift
+  temperatures =array(temperatures)
+  #p1, = ax.plot(energies,pressures, 'o', mec='k')
+  #ax.errorbar(energies,pressures,yerr=pressuresE, fmt='', capsize=6)
+  rho_leg = f"rho[g/cc]={rho0:.2f}"
+  p1, = ax.plot(temperatures,pressures, markers[j], mec='k', color=colors[j], ms=14, label=rho_leg )
+  c = p1.get_color()
+
+
+  a= 0.0172   # in 1/amu
+  b= -0.0176  # in 1/A^3
+  mass = EOS[T0]['mass']
+  gamma_fit = lambda V:  a*mass*from_gccA3_to_amu + b*V
+  V0 = V0s[ rhos==rho0 ][0]
+  gamma0 = gamma_fit(V0)
+  ee = linspace(min(energies),max(energies),10000)
+  all_rhosT0 =  EOS[T0]['rho']==rho0
+  E0 = EOS[T0]['E'][ all_rhosT0 ][0] + Eshift
+  P0 = EOS[T0]['P'][ all_rhosT0 ][0]  
+  linear_fit = lambda e: P0 + (gamma0/V0) *160.21766 *(e - E0)
+  doubly_linear_fit = lambda e,T:  P0 + (Gamma_Fit(V0,T)/V0) *160.21766 *(e - E0)
+  
+  Pth_MG = []
+  for i in range(len(energies)):
+    Pth_MG += [ doubly_linear_fit(energies[i], temperatures[i]) ]
+  Pth_MG=array(Pth_MG)
+  #ax.plot(ee, linear_fit(ee), '-' , color=c  )
+  ax.plot(temperatures, linear_fit(energies), '-' ,dashes=[10,1,1,1], color=c ,zorder=-j )
+  ax.plot(temperatures, Pth_MG, 'k-' ,lw=2, color=c ,zorder=-j )
+  
+  #ax2.plot(energies, pressures - linear_fit(energies) , 'o-', ms= 6 )
+  #ax2.errorbar(energies, pressures - linear_fit(energies), yerr=pressuresE , fmt='', capsize=6  )
+  ax2.errorbar(temperatures, pressures - linear_fit(energies), yerr=pressuresE , fmt='-',mfc='w', mec=c, marker=markers[j], color=colors[j], dashes=[10,1,1,1], ms=10,lw=2, capsize=6, alpha=0.5  )
+  ax2.errorbar(temperatures, pressures - Pth_MG, yerr=pressuresE , fmt='-',mec='k', marker=markers[j], color=colors[j], ms=14,lw=2, capsize=6  )
+ ax2.plot(temperatures, 0*temperatures, 'k--')
+
+ ax.set_yscale('log')
+ ax.set_xscale('log')
+ ax2.set_xscale('log')
+ ax2.set_ylim(-900,550)
+ ax.legend(loc=4, fontsize=12)
+ setp(ax.get_xticklabels(),visible=False)
+ subplots_adjust(hspace=0)
+
+ ax.set_ylabel(r'Pressure (GPa)') 
+ ax2.set_ylabel(r'$\Delta P$ (GPa)') 
+ ax2.set_xlabel(r'Temperature (K)') 
+ 
+ #savefig('P_vs_T_MG_v1.png')
+
+
+
+
 #P_vs_V(T0=20000)
 #Pth_over_Eth_vs_density()
-#P_vs_E(rho0=15)
-P_vs_P_MG()
+#P_vs_E(rho0=rho0)
+#P_vs_P_MG()
+#P_vs_E()
+P_vs_T()
 
 
 show()
