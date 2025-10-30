@@ -405,7 +405,7 @@ def P_vs_E(rho0=15):
  pressuresE= []
  temperatures = []
  rhos=EOS[T0]['rho']
- for j,rho0 in enumerate(rhos[:2]): #rhos_f[::2]:
+ for j,rho0 in enumerate(rhos[:10]): #rhos_f[::2]:
   energies = []
   energiesE= []
   pressures = []
@@ -483,16 +483,16 @@ def P_vs_V(T0):
  V = EOS[T0]['V'][:6] 
  ax.plot(V,P, 'H-', c='darkgreen', mfc='limegreen', mec='k', mew=1,  ms=14, lw=2, label='$T=20,000$ K')
 
- T1 = Ts[4]
+ T1 = Ts[5]
  print("T1=",T1)
  P1 = EOS[T1]['P'][:6] 
  V1 = EOS[T1]['V'][:6] 
- ax.plot(V1,P1, '^-', c='red', mec='k', mew=1, ms=16, lw=2, label='$T=100,000$ K')
+ ax.plot(V1,P1, '^-', c='red', mec='k', mew=1, ms=16, lw=2, label='$T=250,000$ K')
 
  ax.annotate("", xy=(V1[2], 0.95*P1[2]), xytext=(V[2], 1.1*P[2]) ,arrowprops=dict(  arrowstyle="-|>", color="k", lw=1.5, shrinkA=0, shrinkB=0, mutation_scale=15  ) , zorder=-1)
  ax.text( V[2]+0.1,P[2]+650, r"$P_{\rm th}$", fontsize=20)
 
- for T1 in Ts[1:4]:
+ for T1 in Ts[1:5]:
   P1 = EOS[T1]['P'][:6] 
   V1 = EOS[T1]['V'][:6] 
   ax.plot(V1,P1, '^-', c='red', mec='k', mew=1, ms= 8, lw=1, alpha=0.2) #, label=str(T1))
@@ -515,7 +515,7 @@ def P_vs_V(T0):
  energies = []
  pressures = []
  V0 = 6.24927400
- for T0 in Ts[0:10]:
+ for T0 in Ts[0:6]:
   V = EOS[T0]['V']
   Ps =  EOS[T0]['P']
   Es =  EOS[T0]['E']
@@ -523,7 +523,16 @@ def P_vs_V(T0):
   E0 = Es[ V == V0 ][0] 
   energies  += [ E0 ]
   pressures += [ P0 ]
- ax.plot(energies,pressures, 'kD-', mfc='pink', ms=15, lw=2, label='V= 6.25 $\AA^3/f.u.$')
+ ax.plot(energies,pressures, 'k^-', mfc='pink', ms=15, lw=2, label='V= 6.25 $\AA^3/f.u.$')
+ ax.plot([energies[0]],[pressures[0]], 'H-', c='darkgreen', mfc='limegreen', mec='k', mew=1,  ms=18, lw=2)
+ ax.plot([energies[-1]],[pressures[-1]], '^-', c='red', mec='k', mew=1, ms=19, lw=2) 
+ pp = linspace(min(pressures),max(pressures))
+ ax.hlines(y= min(pressures), xmin=min(energies),xmax=max(energies), linestyles='--', color='grey', zorder=-1 )
+ ax.vlines(x= max(energies), ymin=min(pressures),ymax=max(pressures), linestyles='--', color='grey', zorder=-1 )
+
+ ax.text(energies[4],1.1*pressures[4],r"Temperature $\to$", rotation=19, fontsize=15)
+ ax.text(energies[-1]+1, pressures[4],r"$P_{\rm th}$", fontsize=20)
+ ax.text(energies[4], pressures[0]-450,r"$E_{\rm th}$", fontsize=20)
 
  linear_fit = lambda x, a,b:  a*x+b
  popt, pcov = curve_fit( linear_fit, energies, pressures)
@@ -533,8 +542,8 @@ def P_vs_V(T0):
 
  ax.set_xlabel('Energy (eV/f.u.)') 
  ax.set_ylabel(r'Pressure (GPa)') 
- #ax.set_ylim(0, 9000)
- #ax.set_xlim(3,10)
+ ax.set_ylim(1000, 6100)
+ ax.set_xlim(-7460,-7160)
  legend()
 
  print("V0=",V0, "gamma=", gamma)
@@ -660,8 +669,8 @@ def Pth_over_Eth_vs_density():
  
  
   #print("# T[K]=",T1)
-  #print("T1[K]= %9.0f  slope(Pth/Eth)_vs_rho[1/amu]= %8.4f  intercept[1/A3]= %8.4f"  % (T1, slope, intercept ) )
-  print(int(T1), ": (", slope, ", ", intercept, ")," )
+  print("T1[K]= %9.0f  slope(Pth/Eth)_vs_rho[1/amu]= %8.4f  intercept[1/A3]= %8.4f"  % (T1, slope, intercept ) )
+  #print(int(T1), ": (", slope, ", ", intercept, ")," )
 
   #for j in range(len(rhos_f)):
   # gamma = dPdU_V[j] * (mass/rhos_f[j])
@@ -765,7 +774,8 @@ def P_vs_P_MG():
   #p,= ax6.plot(energies, pressures, 'o', mec='k', ms=10) 
   #p, = ax6.plot(energies, pressures, 'o', mec='k', ms=10, label='Original data at rho[g/cc]='+str(rho0) )
   #p, = ax6.plot(energies, pressures, '-', marker=markers[j], color=colors[j], mec='k', ms=10, label='EOS MgO at rho[g/cc]='+str(rho0) )
-  err_plot = ax6.errorbar(energies, pressures, xerr=energiesE, yerr=pressuresE, capsize= 6, fmt=markers[j], lw=1,  color=colors[j], mec='k', ms=10, label='rho[g/cc]='+str(rho0) )
+  rho_leg = f"rho[g/cc]={rho0:.2f}"
+  err_plot = ax6.errorbar(energies, pressures, xerr=energiesE, yerr=pressuresE, capsize= 6, fmt=markers[j], lw=1,  color=colors[j], mec='k', ms=10, label=rho_leg ,ecolor='k')
   c = err_plot[0].get_color()
 
   ee = linspace(min(energies),max(energies),500)
@@ -791,10 +801,11 @@ def P_vs_P_MG():
 
  ax6.plot( E, P, 'ks-', mfc='w', mec='k',mew=2, ms= 8, zorder=10)
  ax6.plot(E1,P1, 'ko-', mfc='w', mec='k',mew=2, ms=10, zorder=10)
- #savefig('P_vs_E_comparison_v1.png')
- #savefig('P_vs_E_comparison_v2.png')
  #ax6.plot(energies, pressures, 'o-', label='Original data at rho[g/cc]='+str(rho0) )
  #ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , label='Mie Gruneisen')
+ ax6.text(energies[4],1.1*pressures[6],r"Temperature $\to$", rotation=19, fontsize=15)
+ ax6.text(EOS[T0]['E'][0]+100,  0.95*EOS[T0]['P'][0],r"$T=20\,000$ K", rotation=10, fontsize=12)
+ ax6.text(EOS[T1]['E'][0]+100,  0.95*EOS[T1]['P'][0],r"$T=250\,000$ K", rotation=10, fontsize=12)
  legend()
  ax6.set_xlabel('Energy (eV/atom)') 
  ax6.set_ylabel(r'Pressure (GPa)') 
@@ -850,13 +861,13 @@ def P_vs_T():
  V0s  = EOS[T0]['V']
  rhos = delete(rhos,[1,9,11])  # Not all rhos at 20000 K get to PIMC temperatures
  V0s = delete(V0s,[1,9,11])  # Not all rhos at 20000 K get to PIMC temperatures
- for j,rho0 in enumerate(rhos[:6]): #rhos_f[::2]:
+ for j,rho0 in enumerate(rhos[:8]):
   energies = []
   energiesE= []
   pressures = []
   pressuresE= []
   temperatures = []
-  for ti in Ts[:11]:
+  for ti in Ts[:10]:
    #V0 = mass/rho0
    V0 = V0s[j]
    Ps =  EOS[ti]['P']
@@ -910,6 +921,11 @@ def P_vs_T():
   # --> f(x) = exp(-2x)f(0) +  2 [ a(T)*m + b(T)*V ] [ 1/2 - exp(-2x)/2]
   # --> gamma(E) = exp(-2x)gamma(E0) +  2 [ a(T)*m + b(T)*V ] [ 1/2 - exp(-2 ∆E )/2]
 
+  # The following function is based on the simple idea that we can equate gamma/V = a(T)rho + b(T) = ∆P/∆E
+  # I know this is inconsistent, because the statement "gamma does not depend on temeprature" is equivalent to P(V,T) = P(V,T0) + gamma(V,T0)/V [ E(V,T)-E(V,T0) ] (or gamma(V,T0)/V = ∆P/∆E)
+  # Therefore, if you allow gamma to depend on temperature, it means that (d gamma/dT)_V = (d gamma/dE)*(dE/dT)_V != 0, which means that gamma DOES change with energy along an isochore and makes
+  # P(V,T) = P(V,T0) + (gamma(V,T0)/V) [ E(V,T)-E(V,T0) ] + 1/2V gamma'(V,T0) [ E(V,T)-E(V,T0) ]^2 
+  # this,  ∆P/∆E = (gamma(V,T0)/V) + 1/2V gamma'(V,T0) ∆E,     where by gamma' I actually mean ( d gamma/dE) evaluated at E=E0=E(V,T0)
   doubly_linear_fit = lambda e,T:  P0 + (Gamma_Fit(V0,T)/V0) *160.21766 *(e - E0)
   
   Pth_MG = []
@@ -917,19 +933,22 @@ def P_vs_T():
     Pth_MG += [ doubly_linear_fit(energies[i], temperatures[i]) ]
   Pth_MG=array(Pth_MG)
   #ax.plot(ee, linear_fit(ee), '-' , color=c  )
-  ax.plot(temperatures, linear_fit(energies), '-' ,dashes=[10,1,1,1], color=c ,zorder=-j )
+  ax.plot(temperatures, linear_fit(energies), '-' ,dashes=[ 5,1,1,1], color=c ,zorder=-j )
   ax.plot(temperatures, Pth_MG, 'k-' ,lw=2, color=c ,zorder=-j )
   
   #ax2.plot(energies, pressures - linear_fit(energies) , 'o-', ms= 6 )
   #ax2.errorbar(energies, pressures - linear_fit(energies), yerr=pressuresE , fmt='', capsize=6  )
-  ax2.errorbar(temperatures, pressures - linear_fit(energies), yerr=pressuresE , fmt='-',mfc='w', mec=c, marker=markers[j], color=colors[j], dashes=[10,1,1,1], ms=10,lw=2, capsize=6, alpha=0.5  )
-  ax2.errorbar(temperatures, pressures - Pth_MG, yerr=pressuresE , fmt='-',mec='k', marker=markers[j], color=colors[j], ms=14,lw=2, capsize=6  )
+  ax2.errorbar(temperatures, pressures - linear_fit(energies), yerr=pressuresE , fmt='-',mfc='w', mec=c, marker=markers[j], color=colors[j], dashes=[ 5,1,1,1], ms=10,lw=2, capsize=6, alpha=0.5  )
+  ax2.errorbar(temperatures, pressures - Pth_MG, yerr=pressuresE , fmt='-',mec='k', marker=markers[j], color=colors[j], ms=14,lw=2, capsize=6, zorder=j )
  ax2.plot(temperatures, 0*temperatures, 'k--')
+ ax2.errorbar(-temperatures, pressures - linear_fit(energies), yerr=pressuresE , fmt='-',mfc='w', mec=c, marker=markers[8], color=colors[8], dashes=[ 5,1,1,1], ms=10,lw=2, capsize=6, alpha=0.5 ,mew=1, label='Model 1' )
+ ax2.errorbar(-temperatures, pressures-Pth_MG, yerr=pressuresE , fmt='-',mec='k', marker=markers[8], color=colors[8], ms=14,lw=2, capsize=6, zorder=j , label='Model 2')
+ ax2.legend(loc=3,numpoints=2)
 
  ax.set_yscale('log')
  ax.set_xscale('log')
  ax2.set_xscale('log')
- ax2.set_ylim(-900,550)
+ ax2.set_ylim(-1500,550)
  ax.legend(loc=4, fontsize=12)
  setp(ax.get_xticklabels(),visible=False)
  subplots_adjust(hspace=0)
@@ -939,16 +958,17 @@ def P_vs_T():
  ax2.set_xlabel(r'Temperature (K)') 
  
  #savefig('P_vs_T_MG_v1.png')
+ #savefig('P_vs_T_MG_v2.png')
 
 
 
 
+#P_vs_E()
 #P_vs_V(T0=20000)
 #Pth_over_Eth_vs_density()
 #P_vs_E(rho0=rho0)
-#P_vs_P_MG()
-#P_vs_E()
-P_vs_T()
+P_vs_P_MG()
+#P_vs_T()
 
 
 show()

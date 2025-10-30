@@ -1,0 +1,19 @@
+# Form  MgO_EOS_09-18-20.txt
+#T1[K]=     30000  slope(Pth/Eth)_vs_rho[1/amu]=   0.0155  intercept[1/A3]=   0.0233
+T1[K]=     40000  slope(Pth/Eth)_vs_rho[1/amu]=   0.0147  intercept[1/A3]=   0.0254
+T1[K]=     50000  slope(Pth/Eth)_vs_rho[1/amu]=   0.0151  intercept[1/A3]=   0.0215
+T1[K]=    100000  slope(Pth/Eth)_vs_rho[1/amu]=   0.0163  intercept[1/A3]=   0.0062
+T1[K]=    250000  slope(Pth/Eth)_vs_rho[1/amu]=   0.0172  intercept[1/A3]=  -0.0176
+T1[K]=    500000  slope(Pth/Eth)_vs_rho[1/amu]=   0.0173  intercept[1/A3]=  -0.0248
+T1[K]=    750000  slope(Pth/Eth)_vs_rho[1/amu]=   0.0173  intercept[1/A3]=  -0.0257
+T1[K]=   1010479  slope(Pth/Eth)_vs_rho[1/amu]=   0.0174  intercept[1/A3]=  -0.0251
+T1[K]=   1347305  slope(Pth/Eth)_vs_rho[1/amu]=   0.0171  intercept[1/A3]=  -0.0224
+T1[K]=   2020958  slope(Pth/Eth)_vs_rho[1/amu]=   0.0151  intercept[1/A3]=  -0.0131
+T1[K]=   4041916  slope(Pth/Eth)_vs_rho[1/amu]=   0.0146  intercept[1/A3]=  -0.0108
+T1[K]=   8083831  slope(Pth/Eth)_vs_rho[1/amu]=   0.0142  intercept[1/A3]=  -0.0066
+T1[K]=  16167663  slope(Pth/Eth)_vs_rho[1/amu]=   0.0148  intercept[1/A3]=  -0.0021
+T1[K]=  32335325  slope(Pth/Eth)_vs_rho[1/amu]=   0.0156  intercept[1/A3]=  -0.0007
+T1[K]=  64670651  slope(Pth/Eth)_vs_rho[1/amu]=   0.0160  intercept[1/A3]=  -0.0003
+T1[K]= 129341301  slope(Pth/Eth)_vs_rho[1/amu]=   0.0163  intercept[1/A3]=  -0.0001
+T1[K]= 258682602  slope(Pth/Eth)_vs_rho[1/amu]=   0.0164  intercept[1/A3]=  -0.0001
+T1[K]= 517365204  slope(Pth/Eth)_vs_rho[1/amu]=   0.0165  intercept[1/A3]=  -0.0000
