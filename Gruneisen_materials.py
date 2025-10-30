@@ -20,7 +20,7 @@ a=subplot(111)
 #title_ = "Hydrogen";
 #title_ = "Helium";
 #title_ = "Silicon";
-title_ = "CH";
+title_ = "CH$_2$";
 if (len(sys.argv)>1):
    title_ = str(sys.argv[1])
 title(title_)
@@ -53,8 +53,8 @@ A         = 1e-10; # Angstroem
 StephanBoltzmannConstant = 5.670367e-8;
 ##############################################################################################################################
 
-d   = numpy.loadtxt('FPEOS_isotherms.txt'      ,usecols=(1,3,5,7,9,11)); # index,rho,V,T,P,E
-dp  = numpy.loadtxt('FPEOS_isotherm_points.txt',usecols=(1,3,5,7,9,11)); # index,rho,V,T,P,E
+d   = numpy.loadtxt('FPEOS/FPEOS_isotherms.txt'      ,usecols=(1,3,5,7,9,11)); # index,rho,V,T,P,E
+dp  = numpy.loadtxt('FPEOS/FPEOS_isotherm_points.txt',usecols=(1,3,5,7,9,11)); # index,rho,V,T,P,E
 
 iMin = int(min(d[:,0]))
 iMax = int(max(d[:,0]))
@@ -113,7 +113,7 @@ for i in range(iMin+3,iMax+1,1):
     x = d[ii,1]
     y = PVDiff/EDiff
     t_leg = fr"{min(d[ii,3])/1000 :.0f}$\times 10^3$ K"
-    plot( x[::4], y[::4],  linewidth=2,  marker=markers[i%len(markers)], ms=12, mec='k', label=t_leg)
+    plot( x[::6], y[::6],  linewidth=2,  marker=markers[i%len(markers)], ms=12, mec='k', label=t_leg)
 
 x=np.linspace(0, 2*max(d[:,1]))
 plot( x, 0*x+2.0/3, '--k', lw=2, zorder=-1) 
@@ -138,7 +138,7 @@ ylabel(r'$V\times (P_{\rm th}/E_{\rm th})$')
 #a.set_ylim( 10.0**np.floor(np.log10(min(hug[:,cy]))) , 10.0**np.ceil(np.log10(max(hug[:,cy]))) )
 #a.set_xlim( 2.0                                   , ceil(5.01*max(hugRad[:,cx]))/5 )
 #a.set_xlim(0, 1.1*max(d[:,1]))
-a.set_xlim(1.5, 17)
+a.set_xlim(1.5, 14)
 #a.xaxis.set_minor_locator(MultipleLocator(0.2));
 #a.set_yscale('log')
 a.xaxis.set_ticks_position('both')
@@ -146,7 +146,7 @@ a.get_xaxis().set_tick_params(which='both', direction='in')
 a.yaxis.set_ticks_position('both')
 a.get_yaxis().set_tick_params(which='both', direction='in')
 
-legend(loc=1,frameon=True,framealpha=0.2,handlelength=1.5,ncol=1,handletextpad=0.4,numpoints=1, fontsize=16)
+legend(loc=4,frameon=True,framealpha=0.2,handlelength=1.5,ncol=1,handletextpad=0.4,numpoints=1, fontsize=16)
 
 savefig(scriptName+'.pdf', bbox_inches='tight')
 savefig(scriptName+'.png', bbox_inches='tight', dpi=200)

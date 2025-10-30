@@ -1,0 +1,11 @@
+#From Cs = sqrt( (dP/drho)_S ) along the isentropes, evaluating at the intersection of the isentrope and the Hugoniot
+Ad  3  P_Hug[GPa]=          21.13  rho_Hug[g/cc]=   0.4208  T_Hug[K]=        16603  Cs[km/s]=       9.6386
+Ad  4  P_Hug[GPa]=         106.93  rho_Hug[g/cc]=   0.5854  T_Hug[K]=        58860  Cs[km/s]=      17.3094
+Ad  5  P_Hug[GPa]=         539.33  rho_Hug[g/cc]=   0.6505  T_Hug[K]=       201800  Cs[km/s]=      37.0595
+Ad  6  P_Hug[GPa]=        2071.01  rho_Hug[g/cc]=   0.5775  T_Hug[K]=       638045  Cs[km/s]=      77.6155
+Ad  7  P_Hug[GPa]=        6186.70  rho_Hug[g/cc]=   0.5258  T_Hug[K]=      1931798  Cs[km/s]=     140.4917
+Ad  8  P_Hug[GPa]=       18628.72  rho_Hug[g/cc]=   0.5052  T_Hug[K]=      5957661  Cs[km/s]=     248.2739
+Ad  9  P_Hug[GPa]=       57880.83  rho_Hug[g/cc]=   0.4978  T_Hug[K]=     18684798  Cs[km/s]=     440.4891
+Ad 10  P_Hug[GPa]=      181167.03  rho_Hug[g/cc]=   0.4952  T_Hug[K]=     58827848  Cs[km/s]=     782.1387
+Ad 11  P_Hug[GPa]=      572980.00  rho_Hug[g/cc]=   0.4944  T_Hug[K]=    186030005  Cs[km/s]=    1390.1314
+Ad 12  P_Hug[GPa]=     1811088.17  rho_Hug[g/cc]=   0.4941  T_Hug[K]=    588164674  Cs[km/s]=    2471.6222
