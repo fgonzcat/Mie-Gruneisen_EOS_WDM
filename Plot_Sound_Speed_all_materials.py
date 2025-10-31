@@ -30,8 +30,9 @@ material = 'He'
 #material = 'Si'
 
 
-markers = [  'p', 'o', 's', '^', 'H', '>', '<', 'D', 'p', 'h', 'H', 'X', '*', 'P', 'd', '|']
+markers = [  'o', 'p', 's', '^', 'H', '>', '<', 'D', 'p', 'h', 'H', 'X', '*', 'P', 'd', '|']
 colors = ["#0072B2",  # royal blue
+          'red',    
           "#E69F00",  # golden orange
           "#CC79A7",  # magenta
           "#56B4E9",  # sky blue
@@ -49,13 +50,34 @@ materials = [ 'H', 'He', 'Si', 'CH2',  'MgSiO3' ]
 lighten_color = lambda color,amount:  (1 - amount) * np.array(to_rgb(color)) + amount * np.array([1, 1, 1])  # Lambda function to lighten any colors
 
 for j,material in enumerate(materials):
- P, Cs = loadtxt(material+'_Sound_Speeds.dat', usecols=(3,9) , unpack=True)
- k = 2 if len(P)>3 else 2
- spl_cs = InterpolatedUnivariateSpline(P, Cs, k=k)
- pp = linspace(min(P),max(P), 10000)
+ P_Cs, rho_Cs, Cs = loadtxt(material+'_Sound_Speeds.dat', usecols=(3,5,9) , unpack=True)        # Cs(P) along the Hugoniot
+ P_hug, T_hug, rho_hug, rho0_hug = loadtxt('FPEOS_Hugoniot_'+material+'.txt', usecols=(9,1,7,5), unpack=True)
+ spl_Rhohug = InterpolatedUnivariateSpline( P_hug, rho_hug)  # rho(P_hug) along the Hugoniot
+ drhodP_hug = lambda  p: spl_Rhohug.derivative()(p)  # drhoPdP = ∆rho/∆P  in  (g/cc)/GPa
+ rho0 = rho0_hug[0]
+
+ spl_cs = InterpolatedUnivariateSpline(P_Cs, Cs, k=2)
+ pp = linspace(min(P_Cs),max(P_Cs), 10000)
  ax.plot( pp, spl_cs(pp), '-',c=colors[j], mfc='w', mec=colors[j], lw=4, ms=15 , zorder=10)
  if material=='CH2': material = r'CH$_2$'
- ax.plot( P, Cs, markers[j], c=colors[j], mfc=lighten_color(colors[j],0.5), mec=colors[j], mew=3,  ms=20 , zorder=10, label=material)
+ ax.plot( P_Cs, Cs, markers[j], c=colors[j], mfc=lighten_color(colors[j],0.7), mec=colors[j], mew=3,  ms=20 , zorder=10, label=material)
+
+ # OBTAINING GRUNEISEN FROM Cs= sqrt( (dP/drho)_S ):  gamma = ( Cs*rho^2 - rho^2*dPdrho_hug ) / ( P - rho^2*dPdrho_hug * ( 1/rho0 - 1/rho ) ) *2/rho 
+ linear_fit = lambda x, a,b: a*x+b
+ lnP = log(P_Cs)
+ lnCs = log(Cs)
+ popt, pcov = curve_fit(linear_fit, lnP, lnCs)   #  lnCs = a*lnP + b  <--> Cs(P) = exp*(b)*P^a
+ pp = linspace(min(P_Cs), max(P_Cs) )
+ ln_pp = log(pp)
+ ax.plot( pp, exp( linear_fit( ln_pp, *popt ) ) , 'k--' )
+ print("\nMaterial=", material, "Cs(P)=exp*(b)*P^a", "a=", popt[0], ' b=', popt[1])
+
+ rho= rho_Cs
+ P  =  P_Cs
+ gamma =   ( Cs *rho*rho - rho*rho/drhodP_hug(P) ) / (P  - rho*rho/ drhodP_hug(P) * ( 1/rho0 - 1/rho ) ) *2/rho
+ for i in range(len(P_Cs)):
+  #print("P[GPa]=", P[i], "Cs[km/s]=", Cs[i], "Gamma=", gamma[i])
+  print("P[GPa]= %14.4f  rho[g/cc]= %8.4f  Cs[km/s]= %8.4f  gamma= %8.4f" % (P_Cs[i], rho[i], Cs[i], gamma[i]) )
 
 
 ax.set_xscale('log')

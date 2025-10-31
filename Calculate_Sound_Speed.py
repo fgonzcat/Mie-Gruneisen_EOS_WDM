@@ -7,7 +7,7 @@ from pylab import *
 from scipy.optimize import curve_fit
 from scipy.interpolate import InterpolatedUnivariateSpline
 import glob
-from scipy.optimize import brentq
+from matplotlib.colors import to_rgb
 
 fig_size = [700/72.27 ,550/72.27]
 params = {'axes.labelsize': 20, 'legend.fontsize': 15,
@@ -25,8 +25,8 @@ rcParams.update(params)
 
 
 #material = 'H'
-material = 'He'
-#material = 'MgSiO3'
+#material = 'He'
+material = 'MgSiO3'
 #material = 'Si'
 #material = 'CH2'
 
@@ -59,6 +59,9 @@ list_adiabats['He']= [3,4,5,6,7,8,9,10,11,12]
 list_adiabats['MgSiO3']= [6,7,8,9,10,12]
 list_adiabats['Si']= [6,7, 0,9, 1,11,2,13,3,15,4]
 list_adiabats['CH2']= [5,6,7,8,9,11,13,15]
+
+colors = [ 'red', "#E69F00"]  # golden orange
+lighten_color = lambda color,amount:  (1 - amount) * np.array(to_rgb(color)) + amount * np.array([1, 1, 1])  # Lambda function to lighten any colors
 
 P_solutions = []
 T_solutions = []
@@ -102,8 +105,8 @@ for i in list_adiabats[material]:
 ax.plot( P_solutions, T_solutions, 'o',c='red',mfc='w',mew=2,  mec='red', lw=2, ms=15 )
 spl_cs = InterpolatedUnivariateSpline(P_solutions, Cs_solutions, k=2)
 pp = linspace(min(P_solutions),max(P_solutions), 100000)
-ax2.plot( pp, spl_cs(pp), '-',c='red', mfc='w', mec='red', lw=4, ms=15 , zorder=10)
-ax2.plot( P_solutions, Cs_solutions, 'p',c='red', mfc='w', mec='red', mew=3,  ms=20 , zorder=10, label='Hugoniot')
+ax2.plot( pp, spl_cs(pp), '-',c=colors[0], mfc='w', mec='red', lw=4, ms=15 , zorder=10)
+ax2.plot( P_solutions, Cs_solutions, 'p',c='red', mfc=lighten_color(colors[0],0.8), mec=colors[0], mew=3,  ms=20 , zorder=10, label='Hugoniot')
 
 
  ## P vs density along isentrope
