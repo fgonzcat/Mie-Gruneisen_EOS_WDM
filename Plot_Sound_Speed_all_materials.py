@@ -24,28 +24,24 @@ params = {'axes.labelsize': 20, 'legend.fontsize': 15,
 rcParams.update(params)
 
 
-#material = 'H'
-material = 'He'
-#material = 'MgSiO3'
-#material = 'Si'
-
-
-markers = [  'o', 'p', 's', '^', 'H', '>', '<', 'D', 'p', 'h', 'H', 'X', '*', 'P', 'd', '|']
-colors = ["#0072B2",  # royal blue
-          'red',    
-          "#E69F00",  # golden orange
-          "#CC79A7",  # magenta
-          "#56B4E9",  # sky blue
-          "#009E73"]  # teal green
-
-
-
 
 fig = figure('T vs P isentropes')
 ax=subplot(111)
 
 
-materials = [ 'H', 'He', 'Si', 'CH2',  'MgSiO3' ]
+materials = [ 'H', 'He', 'Si', 'C', 'CH2',  'MgSiO3', 'LiF', 'SiO2',  'MgO' ]
+markers = [  'p', 'o', 'H', 'd', '>', 'D', '<', '^', 's', 'h', 'H', 'X', '*', 'P', 'd', '|']
+colors = ["red",
+          "#56B4E9",  # sky blue
+          "#E69F00",  # golden orange
+          'black',
+          "#CC79A7",  # magenta
+          "#009E73",  # teal green
+          'magenta',
+          '#0072B2', # royal blue
+          'blue']
+
+
 
 lighten_color = lambda color,amount:  (1 - amount) * np.array(to_rgb(color)) + amount * np.array([1, 1, 1])  # Lambda function to lighten any colors
 
@@ -58,9 +54,11 @@ for j,material in enumerate(materials):
 
  spl_cs = InterpolatedUnivariateSpline(P_Cs, Cs, k=2)
  pp = linspace(min(P_Cs),max(P_Cs), 10000)
- ax.plot( pp, spl_cs(pp), '-',c=colors[j], mfc='w', mec=colors[j], lw=4, ms=15 , zorder=10)
  if material=='CH2': material = r'CH$_2$'
- ax.plot( P_Cs, Cs, markers[j], c=colors[j], mfc=lighten_color(colors[j],0.7), mec=colors[j], mew=3,  ms=20 , zorder=10, label=material)
+ zval = 20 if material=='H' else j
+ if material=='C': zval = 8 
+ ax.plot( pp, spl_cs(pp), '-',c=colors[j], mfc='w', mec=colors[j], lw=4, ms=15 , zorder=zval)
+ ax.plot( P_Cs, Cs, markers[j], c=colors[j], mfc=lighten_color(colors[j],0.7), mec=colors[j], mew=3,  ms=18 , zorder=zval, label=material)
 
  # OBTAINING GRUNEISEN FROM Cs= sqrt( (dP/drho)_S ):  gamma = ( Cs*rho^2 - rho^2*dPdrho_hug ) / ( P - rho^2*dPdrho_hug * ( 1/rho0 - 1/rho ) ) *2/rho 
  linear_fit = lambda x, a,b: a*x+b
@@ -69,7 +67,7 @@ for j,material in enumerate(materials):
  popt, pcov = curve_fit(linear_fit, lnP, lnCs)   #  lnCs = a*lnP + b  <--> Cs(P) = exp*(b)*P^a
  pp = linspace(min(P_Cs), max(P_Cs) )
  ln_pp = log(pp)
- ax.plot( pp, exp( linear_fit( ln_pp, *popt ) ) , 'k--' )
+ #ax.plot( pp, exp( linear_fit( ln_pp, *popt ) ) , 'k--' )
  print("\nMaterial=", material, "Cs(P)=exp*(b)*P^a", "a=", popt[0], ' b=', popt[1])
 
  rho= rho_Cs
@@ -80,12 +78,20 @@ for j,material in enumerate(materials):
   print("P[GPa]= %14.4f  rho[g/cc]= %8.4f  Cs[km/s]= %8.4f  gamma= %8.4f" % (P_Cs[i], rho[i], Cs[i], gamma[i]) )
 
 
+P_MgO_McCoy, PE_MgO_McCoy, Cs_MgO_McCoy, CsE_MgO_McCoy = loadtxt('McCoy.dat', usecols=(10,12,18,20), unpack=True)
+#ax.errorbar(P_MgO_McCoy, Cs_MgO_McCoy,xerr=PE_MgO_McCoy, yerr=CsE_MgO_McCoy,  fmt='*', color='yellow', mec='k', ecolor='k', ms=20, capsize=0,zorder=10, label= 'MgO (exp. McCoy 2019)' )
+
 ax.set_xscale('log')
 ax.set_yscale('log')
 ax.set_ylabel('Sound Speed (km/s)')
 ax.set_xlabel('Pressure (GPa)')
-ax.legend()
 
-#savefig('Sound_Speeds_v1.pdf')
+first_legend = ax.legend()
+gca().add_artist(first_legend)
+exp, = ax.plot(P_MgO_McCoy, Cs_MgO_McCoy,'*', color='yellow', mec='k', ms=20, zorder=10, label= 'MgO (exp. McCoy 2019)' )
+
+second_legend = ax.legend([ exp ] , [ exp.get_label() ] , loc=4,frameon=False,   fontsize=16)
+
+#savefig('Sound_Speeds_v2.pdf')
 
 show()

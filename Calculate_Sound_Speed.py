@@ -24,11 +24,15 @@ params = {'axes.labelsize': 20, 'legend.fontsize': 15,
 rcParams.update(params)
 
 
-#material = 'H'
+material = 'H'
 #material = 'He'
-material = 'MgSiO3'
+#material = 'MgSiO3'
 #material = 'Si'
 #material = 'CH2'
+#material = 'C'
+#material = 'LiF'
+#material = 'SiO2'
+#material = 'MgO'
 
 fig = figure('T vs P isentropes')
 ax=subplot(111)
@@ -41,7 +45,7 @@ for i in range(0,idx):
  ti = T[index==i]
  pi = P[index==i]
  rhoi= rho[index==i]
- ax.plot(pi,ti, label='Ad '+str(i))
+ ax.plot(pi,ti, label='Isentrope '+str(i))
 ax.plot(P_hug, T_hug,'r-', lw=5, dashes=[10,1,1,1], label='Hugoniot ' + material )
 ax.legend()
 ax.set_xlabel('Pressure (GPa)')
@@ -59,6 +63,11 @@ list_adiabats['He']= [3,4,5,6,7,8,9,10,11,12]
 list_adiabats['MgSiO3']= [6,7,8,9,10,12]
 list_adiabats['Si']= [6,7, 0,9, 1,11,2,13,3,15,4]
 list_adiabats['CH2']= [5,6,7,8,9,11,13,15]
+list_adiabats['C']= [1,2,3,4,5]
+list_adiabats['LiF']= [0,1,2,3,4,5,6,7,8,9]
+list_adiabats['SiO2']= [6,7,8,9,10,12,14]
+list_adiabats['MgO']= [6,7,9,11,13,1,15]
+list_adiabats['MgO']= [6,7,8,9,10,12,1,2]
 
 colors = [ 'red', "#E69F00"]  # golden orange
 lighten_color = lambda color,amount:  (1 - amount) * np.array(to_rgb(color)) + amount * np.array([1, 1, 1])  # Lambda function to lighten any colors
@@ -99,7 +108,7 @@ for i in list_adiabats[material]:
   pass
 
  #plt, = ax2.plot( Pi, Cs(rhoi),'-',    lw=2,      dashes=[10,1,1,1] ,  label=r'$P(\rho)$ Ad '+str(i)+'  $P_0$=' + str(int(Pi[0])) +' , $T_0$'+ str(int(Ti[0])) )
- plt, = ax2.plot( Pi, Cs(rhoi),'-',    lw=2,      dashes=[10,1,1,1] ,  label=r'He isentrope $T_0=$' + str(int(Ti[0]/1000) ) + r'$\times 10^3$ K' )
+ plt, = ax2.plot( Pi, Cs(rhoi),'-',    lw=2,      dashes=[10,1,1,1] ,  label=material+  r' isentrope $T_{\rm Hug}=$' + str(int(T_solution/1000) ) + r'$\times 10^3$ K' )
 
 
 ax.plot( P_solutions, T_solutions, 'o',c='red',mfc='w',mew=2,  mec='red', lw=2, ms=15 )
@@ -122,8 +131,9 @@ ax2.set_ylabel('Sound Speed (km/s)')
 ax2.set_xlabel('Pressure (GPa)')
 ax2.set_xscale('log')
 #ax2.set_yscale('log')
-ax2.set_xlim( 8,1e5)
-ax2.set_ylim(0,200)
+#ax2.set_xlim( 0,1e4)
+#ax2.set_ylim(0,50)
 
+#savefig('Cs_vs_P_H.pdf')
 #savefig('Cs_vs_P_He.pdf')
 show()
