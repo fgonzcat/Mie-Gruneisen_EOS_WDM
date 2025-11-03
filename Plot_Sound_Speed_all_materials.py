@@ -54,11 +54,12 @@ for j,material in enumerate(materials):
 
  spl_cs = InterpolatedUnivariateSpline(P_Cs, Cs, k=2)
  pp = linspace(min(P_Cs),max(P_Cs), 10000)
- if material=='CH2': material = r'CH$_2$'
+ material_lab = material
+ if material=='CH2': material_lab = r'CH$_2$'
  zval = 20 if material=='H' else j
  if material=='C': zval = 8 
- ax.plot( pp, spl_cs(pp), '-',c=colors[j], mfc='w', mec=colors[j], lw=4, ms=15 , zorder=zval)
- ax.plot( P_Cs, Cs, markers[j], c=colors[j], mfc=lighten_color(colors[j],0.7), mec=colors[j], mew=3,  ms=18 , zorder=zval, label=material)
+ ax.plot( pp, spl_cs(pp), '-',c=colors[j], mfc='w', mec=colors[j], lw=2, ms=15 , zorder=zval)
+ ax.plot( P_Cs, Cs, markers[j], c=colors[j], mfc=lighten_color(colors[j],0.7), mec=colors[j], mew=3,  ms=18 , zorder=zval, label=material_lab)
 
  # OBTAINING GRUNEISEN FROM Cs= sqrt( (dP/drho)_S ):  gamma = ( Cs*rho^2 - rho^2*dPdrho_hug ) / ( P - rho^2*dPdrho_hug * ( 1/rho0 - 1/rho ) ) *2/rho 
  linear_fit = lambda x, a,b: a*x+b
@@ -68,14 +69,14 @@ for j,material in enumerate(materials):
  pp = linspace(min(P_Cs), max(P_Cs) )
  ln_pp = log(pp)
  #ax.plot( pp, exp( linear_fit( ln_pp, *popt ) ) , 'k--' )
- print("\nMaterial=", material, "Cs(P)=exp*(b)*P^a", "a=", popt[0], ' b=', popt[1])
+ print("\n#Material=", material, "Cs(P)=exp*(b)*P^a", "a=", popt[0], ' b=', popt[1])
 
  rho= rho_Cs
  P  =  P_Cs
  gamma =   ( Cs *rho*rho - rho*rho/drhodP_hug(P) ) / (P  - rho*rho/ drhodP_hug(P) * ( 1/rho0 - 1/rho ) ) *2/rho
  for i in range(len(P_Cs)):
   #print("P[GPa]=", P[i], "Cs[km/s]=", Cs[i], "Gamma=", gamma[i])
-  print("P[GPa]= %14.4f  rho[g/cc]= %8.4f  Cs[km/s]= %8.4f  gamma= %8.4f" % (P_Cs[i], rho[i], Cs[i], gamma[i]) )
+  print("%-10s P[GPa]= %14.4f  rho[g/cc]= %8.4f  Cs[km/s]= %8.4f  gamma= %8.4f" % (material,P_Cs[i], rho[i], Cs[i], gamma[i]) )
 
 
 P_MgO_McCoy, PE_MgO_McCoy, Cs_MgO_McCoy, CsE_MgO_McCoy = loadtxt('McCoy.dat', usecols=(10,12,18,20), unpack=True)

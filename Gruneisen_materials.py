@@ -81,7 +81,8 @@ EGivenRho = interpolate.interp1d(d[iii,1],d[iii,5])
 markers = ['o', 's', 'D', '^', 'v', '<', '>', 'p', 'h', 'H', 'X', '*',  'P', 'd']
 
 
-for i in range(iMin+3,iMax+1,1):
+for i in range(iMin+2,iMax+1,2):
+#for i in range(iMin+3,iMax+1,1):
 #for i in range(0,10):
     ii1  = (d[:,0] ==i) 
     ii2  = (d[:,1]>=min(d[iii,1]))
@@ -138,13 +139,20 @@ ylabel(r'$V\times (P_{\rm th}/E_{\rm th})$')
 #a.set_ylim( 10.0**np.floor(np.log10(min(hug[:,cy]))) , 10.0**np.ceil(np.log10(max(hug[:,cy]))) )
 #a.set_xlim( 2.0                                   , ceil(5.01*max(hugRad[:,cx]))/5 )
 #a.set_xlim(0, 1.1*max(d[:,1]))
-a.set_xlim(1.5, 14)
+a.set_xlim(1.5, 11)
+a.set_ylim(0.35, 0.75)
+#a.set_ylim(0.4, 1.2)
 #a.xaxis.set_minor_locator(MultipleLocator(0.2));
 #a.set_yscale('log')
 a.xaxis.set_ticks_position('both')
 a.get_xaxis().set_tick_params(which='both', direction='in')
 a.yaxis.set_ticks_position('both')
 a.get_yaxis().set_tick_params(which='both', direction='in')
+
+minorYLocator = MultipleLocator(0.01)
+minorXLocator = MultipleLocator(1)
+a.yaxis.set_minor_locator(minorYLocator)
+a.xaxis.set_minor_locator(minorXLocator)
 
 legend(loc=4,frameon=True,framealpha=0.2,handlelength=1.5,ncol=1,handletextpad=0.4,numpoints=1, fontsize=16)
 
