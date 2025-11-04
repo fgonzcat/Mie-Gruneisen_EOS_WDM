@@ -69,7 +69,7 @@ for j,material in enumerate(materials):
  pp = linspace(min(P_Cs), max(P_Cs) )
  ln_pp = log(pp)
  #ax.plot( pp, exp( linear_fit( ln_pp, *popt ) ) , 'k--' )
- print("\n#Material=", material, "Cs(P)=exp*(b)*P^a", "a=", popt[0], ' b=', popt[1])
+ print("\n#Material=", material, "Cs(P)=exp*(b)*P^a", "a=", popt[0], ' b=', popt[1], " rho0[g/cc]=",rho0)
 
  rho= rho_Cs
  P  =  P_Cs

@@ -563,9 +563,9 @@ def Pth_over_Eth_vs_density():
  rcParams.update(params)
  
  fig2 = figure(r'Pth vs Eth')
- ax= subplot(111)
- ax.set_xlabel('Density (g/cc)') 
- ax.set_ylabel(r'$P_{\rm th}/E_{\rm th}$ (1/$\AA^3$)') 
+ #ax= subplot(111)
+ #ax.set_xlabel('Density (g/cc)') 
+ #ax.set_ylabel(r'$P_{\rm th}/E_{\rm th}$ (1/$\AA^3$)') 
  ax2= subplot(211)
  ax3= subplot(212)
  ax3.set_xlabel('Volume ($\AA^3$/f.u.)') 
@@ -606,7 +606,7 @@ def Pth_over_Eth_vs_density():
  #rhos = linspace(15,17, 5)
  #rhos = EOS[T0][-1][2]    # EOS[T0] =  (N,v,r,t,p,e, perr, err)
  rhos = EOS[T0]['rho']
- Temp_list = Ts[1::]
+ Temp_list = Ts[1::2]
  num_curves=len(Temp_list)
  #col = cm.viridis(np.linspace(0.0, 1.0, num_curves))
  #v0   = EOS[T0][-1][1][0]
@@ -619,6 +619,7 @@ def Pth_over_Eth_vs_density():
  
  
  for j,T1 in enumerate(Temp_list):
+  #if j in [1,6,7]: continue 
   Pref = EOS[T0]['P']; Pref_err = EOS[T0]['Perr'];
   Eref = EOS[T0]['E']; Eref_err = EOS[T0]['Eerr'];
   P    = EOS[T1]['P']; Perr     = EOS[T1]['Perr'];
@@ -654,8 +655,8 @@ def Pth_over_Eth_vs_density():
   
  
   label_T1 = str(int(T1/1000))
-  #ax.plot(rhos_f, dPdU_V , '-', c=col[j%len(col)], marker=marker[j%len(marker)], mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
-  #eplot = ax.errorbar(rhos_f, dPdU_V, dPdU_V_err, fmt='o', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ), zorder=-j)
+  ##ax.plot(rhos_f, dPdU_V , '-', c=col[j%len(col)], marker=marker[j%len(marker)], mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
+  #eplot = ax.errorbar(rhos_f, dPdU_V, dPdU_V_err, fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ), zorder=j)
   linear_fit =  lambda x, a,b: a*x+b
   popt,popv = curve_fit(linear_fit, rhos_f, dPdU_V)              # K/rho = dP/drho is pretty linear with rho
   #c = eplot[0].get_color()
@@ -664,7 +665,9 @@ def Pth_over_Eth_vs_density():
   slope = popt[0] * 1.6605391  #  (1/angstrom^3) /(g/cc) =  1.6605391 (1/amu)
   intercept =  popt[1]
  
-  ax2.errorbar(mass/rhos_f, dPdU_V, dPdU_V_err, fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
+  if j not in [1,6,7]:  # Just tricking the legend: label all of them (all lines in legend) but only plot a few in ax2. All of them would be in ax3 
+   ax2.errorbar(mass/rhos_f, dPdU_V, dPdU_V_err, fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12) #, label=label_T1+ str( r'$\times10^3$ K' ))
+  ax2.errorbar(mass/rhos_f, -dPdU_V, dPdU_V_err, fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
   ax3.errorbar(mass/rhos_f, dPdU_V * (mass/rhos_f), dPdU_V_err * (mass/rhos_f), fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12) #, label=label_T1+ str( r'$\times10^3$ K' ))
  
  
@@ -681,6 +684,7 @@ def Pth_over_Eth_vs_density():
  #ax.plot(rhos, 0*rhos+0.21, 'k--', label='0.21 /$\AA^3$')
  ax2.legend(loc=1,fontsize=16)
  ax3.legend(loc=2,fontsize=16)
+ ax2.set_ylim(0.04, 0.45)
  setp(ax2.get_xticklabels(),visible=False)
  subplots_adjust(hspace=0)
  #ax.set_ylim(0,0.6)
@@ -965,9 +969,9 @@ def P_vs_T():
 
 #P_vs_E()
 #P_vs_V(T0=20000)
-#Pth_over_Eth_vs_density()
+Pth_over_Eth_vs_density()
 #P_vs_E(rho0=rho0)
-P_vs_P_MG()
+#P_vs_P_MG()
 #P_vs_T()
 
 

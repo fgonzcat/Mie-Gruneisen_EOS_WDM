@@ -19,8 +19,13 @@ a=subplot(111)
 #title_ = "First-Principles Equation of State Database";
 #title_ = "Hydrogen";
 #title_ = "Helium";
-#title_ = "Silicon";
-title_ = "CH$_2$";
+title_ = "Silicon";
+#title_ = "CH$_2$";
+#title_ = "MgO";
+
+material = title_
+material= "CH2" if material == "CH$_2$" else title_
+
 if (len(sys.argv)>1):
    title_ = str(sys.argv[1])
 title(title_)
@@ -53,8 +58,10 @@ A         = 1e-10; # Angstroem
 StephanBoltzmannConstant = 5.670367e-8;
 ##############################################################################################################################
 
-d   = numpy.loadtxt('FPEOS/FPEOS_isotherms.txt'      ,usecols=(1,3,5,7,9,11)); # index,rho,V,T,P,E
-dp  = numpy.loadtxt('FPEOS/FPEOS_isotherm_points.txt',usecols=(1,3,5,7,9,11)); # index,rho,V,T,P,E
+#d   = numpy.loadtxt('FPEOS/FPEOS_isotherms.txt'      ,usecols=(1,3,5,7,9,11)); # index,rho,V,T,P,E
+#dp  = numpy.loadtxt('FPEOS/FPEOS_isotherm_points.txt',usecols=(1,3,5,7,9,11)); # index,rho,V,T,P,E
+d   = numpy.loadtxt('FPEOS_isotherms_'+material+'.txt'      ,usecols=(1,3,5,7,9,11,13)); # index,rho,V,T,P,E,gamma
+dp  = numpy.loadtxt('FPEOS_isotherm_points_'+material+'.txt',usecols=(1,3,5,7,9,11,13)); # index,rho,V,T,P,E,gamma
 
 iMin = int(min(d[:,0]))
 iMax = int(max(d[:,0]))
@@ -81,15 +88,18 @@ EGivenRho = interpolate.interp1d(d[iii,1],d[iii,5])
 markers = ['o', 's', 'D', '^', 'v', '<', '>', 'p', 'h', 'H', 'X', '*',  'P', 'd']
 
 
-for i in range(iMin+2,iMax+1,2):
+for i in range(iMin,iMax+1,2):
+#for i in range(iMin+2,iMax+1,2):
 #for i in range(iMin+3,iMax+1,1):
 #for i in range(0,10):
-    ii1  = (d[:,0] ==i) 
-    ii2  = (d[:,1]>=min(d[iii,1]))
-    ii3  = (d[:,1]<=max(d[iii,1]))
-    ii4 = np.logical_and(ii1,ii2)
-    ii  = np.logical_and(ii3,ii4)
+    #ii1  = (d[:,0] ==i) 
+    #ii2  = (d[:,1]>=min(d[iii,1]))
+    #ii3  = (d[:,1]<=max(d[iii,1]))
+    #ii4 = np.logical_and(ii1,ii2)
+    #ii  = np.logical_and(ii3,ii4)
     #iip = (dp[:,0]==i)
+    ii  = (d [:,0]==i)
+    iip = (dp[:,0]==i)
     print(i)
 
     if (min(d[ii,3])>100000 and i%2!=0): continue
@@ -109,12 +119,21 @@ for i in range(iMin+2,iMax+1,2):
     #plot( EDiff[ii],PVDiff[ii],  's-', linewidth=1, markersize=0,color='b',mec='b',mfc='lightblue',mew=1,zorder=-11);
     #plot( d[ii,1],PVDiff[ii]/EDiff[ii],  's-', linewidth=1, markersize=0,color='b',mec='b',mfc='lightblue',mew=1,zorder=-11);
 
-    EDiff  =  d[ii,5] - EGivenRho(d[ii,1])
-    PVDiff = (d[ii,4] - PGivenRho(d[ii,1])) * d[ii,2] * 1e9/Ha*A*A*A
-    x = d[ii,1]
-    y = PVDiff/EDiff
+    #EDiff  =  d[ii,5] - EGivenRho(d[ii,1])
+    #PVDiff = (d[ii,4] - PGivenRho(d[ii,1])) * d[ii,2] * 1e9/Ha*A*A*A
+    #x = d[ii,1]
+    #y = PVDiff/EDiff
+    #t_leg = fr"{min(d[ii,3])/1000 :.0f}$\times 10^3$ K"
+    #plot( x[::6], y[::6],  linewidth=2,  marker=markers[i%len(markers)], ms=12, mec='k', label=t_leg)
+
     t_leg = fr"{min(d[ii,3])/1000 :.0f}$\times 10^3$ K"
-    plot( x[::6], y[::6],  linewidth=2,  marker=markers[i%len(markers)], ms=12, mec='k', label=t_leg)
+    if int(min(d[ii,3]))== 500:  t_leg = "500 K"
+    each=8 
+    if material=="Hydrogen": each = 3
+    elif material=="CH2":    each = 10
+    x=d[ii,1][::each]
+    y=d[ii,6][::each]
+    plot( x,y,  linewidth=2, marker=markers[i%len(markers)], ms=12, mec='k', label=t_leg)
 
 x=np.linspace(0, 2*max(d[:,1]))
 plot( x, 0*x+2.0/3, '--k', lw=2, zorder=-1) 
@@ -131,7 +150,8 @@ xlabel(r'Density (g$\,$cm$^{-3}$)')
 #ylabel(r'Temperature (K)')
 #xlabel(r'Internal energy (Ha)')
 #ylabel(r'Pressure$_{th}$ $\times$ volume / E$_{th}$')
-ylabel(r'$V\times (P_{\rm th}/E_{\rm th})$')
+#ylabel(r'$V\times (P_{\rm th}/E_{\rm th})$')
+ylabel(r'$\gamma = V (\partial P/\partial E)_V$')
 
 #print(min(hug[:,cy]))
 
@@ -139,9 +159,40 @@ ylabel(r'$V\times (P_{\rm th}/E_{\rm th})$')
 #a.set_ylim( 10.0**np.floor(np.log10(min(hug[:,cy]))) , 10.0**np.ceil(np.log10(max(hug[:,cy]))) )
 #a.set_xlim( 2.0                                   , ceil(5.01*max(hugRad[:,cx]))/5 )
 #a.set_xlim(0, 1.1*max(d[:,1]))
-a.set_xlim(1.5, 11)
-a.set_ylim(0.35, 0.75)
-#a.set_ylim(0.4, 1.2)
+minorYLocator = MultipleLocator(0.01)
+minorXLocator = MultipleLocator(1)
+a.set_xlim(0, 11)
+a.set_ylim(0.3 , 0.85)
+loc_leg = 4
+if title_=="Hydrogen":
+ a.set_xlim(0,3)
+ minorYLocator = MultipleLocator(0.05)
+elif title_=="Helium":
+ a.set_ylim(0.35, 1.4)
+ a.set_xlim(0,11)
+ loc_leg = 1
+ minorYLocator = MultipleLocator(0.05)
+elif title_=="Silicon":
+ a.set_xlim(3, 20)
+ a.set_ylim(0.3, 0.85)
+ loc_leg = 1
+ minorYLocator = MultipleLocator(0.01)
+ 
+ 
+#materials = [ 'H', 'He', 'Si', 'C',         'MgSiO3', 'LiF', 'SiO2',  'MgO' ]
+materials = ['Si']
+for j,material in enumerate(materials):
+ print("Material",j,":",material)
+ mat, P_hug, rho_hug, Cs_hug, gamma_hug  = np.loadtxt('Gamma_along_Hugoniot_curves.dat', usecols=(0,2,4,6,8) , dtype=str, unpack=True)        # Cs(P) along the Hugoniot
+ Pi =   P_hug[mat == material].astype(float)
+ rhoi = rho_hug[mat == material].astype(float)
+ gi =   gamma_hug[mat == material].astype(float)
+ print(Pi)
+ print(rhoi)
+ print(gi)
+ a.plot(rhoi, gi , 'o-')
+ 
+
 #a.xaxis.set_minor_locator(MultipleLocator(0.2));
 #a.set_yscale('log')
 a.xaxis.set_ticks_position('both')
@@ -149,12 +200,12 @@ a.get_xaxis().set_tick_params(which='both', direction='in')
 a.yaxis.set_ticks_position('both')
 a.get_yaxis().set_tick_params(which='both', direction='in')
 
-minorYLocator = MultipleLocator(0.01)
-minorXLocator = MultipleLocator(1)
 a.yaxis.set_minor_locator(minorYLocator)
 a.xaxis.set_minor_locator(minorXLocator)
 
-legend(loc=4,frameon=True,framealpha=0.2,handlelength=1.5,ncol=1,handletextpad=0.4,numpoints=1, fontsize=16)
+legend(loc=loc_leg,frameon=True,framealpha=0.2,handlelength=1.5,ncol=1,handletextpad=0.4,numpoints=1, fontsize=16, ncols=2)
+
+
 
 savefig(scriptName+'.pdf', bbox_inches='tight')
 savefig(scriptName+'.png', bbox_inches='tight', dpi=200)

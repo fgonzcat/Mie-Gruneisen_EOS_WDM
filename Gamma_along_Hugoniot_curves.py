@@ -71,6 +71,8 @@ for j,material in enumerate(materials):
 
 pp=linspace(0,1e8)
 ax.plot(pp, 0*pp+2/3.0, '--', c='k', lw=1, zorder=-1, label='$\gamma=2/3$')
+dd=linspace(0,17)
+ax2.plot(dd, 0*dd+2/3.0, '--', c='k', lw=1, zorder=-1, label='$\gamma=2/3$')
 
 
 ax.set_xscale('log')
@@ -84,14 +86,17 @@ ax2.set_xlabel('Density (g cm$^{-3}$)')
 #subplots_adjust(hspace=0)
 
 
-#minorYLocator = MultipleLocator(0.02)
+minorYLocator = MultipleLocator(0.10)
 #minorXLocator = MultipleLocator(0.5)
-#ax2.yaxis.set_minor_locator(minorYLocator)
+ax.yaxis.set_minor_locator(minorYLocator)
+ax2.yaxis.set_minor_locator(minorYLocator)
 #ax2.xaxis.set_minor_locator(minorXLocator)
 ax.xaxis.set_ticks_position('both')
 ax.yaxis.set_ticks_position('both')
 ax2.xaxis.set_ticks_position('both')
 ax2.yaxis.set_ticks_position('both')
+ax2.set_xlim(0,17)
+ax2.set_ylim(0.4,2.5)
 
 
 P_MgO_McCoy, PE_MgO_McCoy,rho_MgO_McCoy,rhoE_MgO_McCoy, Cs_MgO_McCoy, CsE_MgO_McCoy,  gamma_MgO_McCoy, gammaE_MgO_McCoy = loadtxt('McCoy.dat', usecols=(10,12,13,15,18,20,21,23), unpack=True)
@@ -99,11 +104,11 @@ P_MgO_McCoy, PE_MgO_McCoy,rho_MgO_McCoy,rhoE_MgO_McCoy, Cs_MgO_McCoy, CsE_MgO_Mc
 first_legend = ax.legend()
 ax.add_artist(first_legend)
 exp = ax.errorbar(P_MgO_McCoy, gamma_MgO_McCoy, yerr=gammaE_MgO_McCoy, fmt='*', color='yellow', capsize=10, ecolor='k',mec='k', ms=20, zorder=10, label= 'MgO (exp. McCoy 2019)' )
-second_legend = ax.legend([ exp ] , [ exp.get_label() ] , loc=4,frameon=False,   fontsize=16)
+second_legend = ax.legend([ exp ] , [ exp.get_label() ] , loc=2,frameon=False,   fontsize=16)
 ax2.errorbar(rho_MgO_McCoy, gamma_MgO_McCoy, xerr=rhoE_MgO_McCoy, yerr=gammaE_MgO_McCoy, fmt='*', color='yellow', capsize=10,ecolor='k',mec='k', ms=20, zorder=10, label= 'MgO (exp. McCoy 2019)' )
 
 
 
 #savefig('Gamma_along_Hugoniots.pdf')
 
-#show()
+show()
