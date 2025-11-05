@@ -37,7 +37,8 @@ colors = ["red",
           'black',
           "#CC79A7",  # magenta
           "#009E73",  # teal green
-          'magenta',
+          #'magenta',
+          '#4B0082',  # dark violet  
           '#0072B2', # royal blue
           'blue']
 
@@ -73,7 +74,8 @@ for j,material in enumerate(materials):
 
  rho= rho_Cs
  P  =  P_Cs
- gamma =   ( Cs *rho*rho - rho*rho/drhodP_hug(P) ) / (P  - rho*rho/ drhodP_hug(P) * ( 1/rho0 - 1/rho ) ) *2/rho
+ dPdrho_hug = 1.0/drhodP_hug(P)
+ gamma = (2/rho) *  ( Cs*Cs *rho*rho - rho*rho*dPdrho_hug   ) / (P  - rho*rho* dPdrho_hug    * ( 1/rho0 - 1/rho ) ) 
  for i in range(len(P_Cs)):
   #print("P[GPa]=", P[i], "Cs[km/s]=", Cs[i], "Gamma=", gamma[i])
   print("%-10s P[GPa]= %14.4f  rho[g/cc]= %8.4f  Cs[km/s]= %8.4f  gamma= %8.4f" % (material,P_Cs[i], rho[i], Cs[i], gamma[i]) )
@@ -86,6 +88,7 @@ ax.set_xscale('log')
 ax.set_yscale('log')
 ax.set_ylabel('Sound Speed (km/s)')
 ax.set_xlabel('Pressure (GPa)')
+ax.set_xlim( 10.0,9e7)
 
 first_legend = ax.legend()
 gca().add_artist(first_legend)

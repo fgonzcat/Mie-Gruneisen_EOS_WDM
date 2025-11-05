@@ -9,6 +9,7 @@ from scipy.interpolate import InterpolatedUnivariateSpline
 import glob
 from matplotlib.colors import to_rgb
 
+
 fig_size = [700/72.27 ,550/72.27]
 params = {'axes.labelsize': 20, 'legend.fontsize': 15,
           'xtick.labelsize': 20, 'ytick.labelsize': 20,
@@ -107,8 +108,8 @@ for i in list_adiabats[material]:
   print("No solution for Ad "+str(i))
   pass
 
- #plt, = ax2.plot( Pi, Cs(rhoi),'-',    lw=2,      dashes=[10,1,1,1] ,  label=r'$P(\rho)$ Ad '+str(i)+'  $P_0$=' + str(int(Pi[0])) +' , $T_0$'+ str(int(Ti[0])) )
- plt, = ax2.plot( Pi, Cs(rhoi),'-',    lw=2,      dashes=[10,1,1,1] ,  label=material+  r' isentrope $T_{\rm Hug}=$' + str(int(T_solution/1000) ) + r'$\times 10^3$ K' )
+ #line, = ax2.plot( Pi, Cs(rhoi),'-',    lw=2,      dashes=[10,1,1,1] ,  label=r'$P(\rho)$ Ad '+str(i)+'  $P_0$=' + str(int(Pi[0])) +' , $T_0$'+ str(int(Ti[0])) )
+ line, = ax2.plot( Pi, Cs(rhoi),'-',    lw=3,      dashes=[10,1,1,1] ,  label=material+  r' isentrope $T_{\rm Hug}=$' + str(int(T_solution/1000) ) + r'$\times 10^3$ K' )
 
 
 ax.plot( P_solutions, T_solutions, 'o',c='red',mfc='w',mew=2,  mec='red', lw=2, ms=15 )
@@ -119,7 +120,7 @@ ax2.plot( P_solutions, Cs_solutions, 'p',c='red', mfc=lighten_color(colors[0],0.
 
 
  ## P vs density along isentrope
- #c = plt.get_color()
+ #c = line.get_color()
  #ax2.plot(rhoi[::20], Pi[::20], 'o', ms=6, mec='k', color=c, label=r'$P(\rho)$ Ad '+str(i)+'  P0,T0=' + str(int(Pi[0])) +' , '+ str(int(Ti[0])) )
  #ax2.plot( rhoi, spl_P(rhoi),'-' , color=c)
  #ax2.plot( rhoi, Cs(rhoi),'-', color=c, dashes=[10,1,1,1] )
@@ -127,13 +128,20 @@ ax2.plot( P_solutions, Cs_solutions, 'p',c='red', mfc=lighten_color(colors[0],0.
  
  
 ax2.legend()
+#ax2.set_yscale('log')
+ax2.set_xscale('log')
+ax2.set_xlim( 10.0,9e7)
+ax.set_xlim( 10.0,9e7)
+#ax2.set_ylim(0,50)
+minorYLocator = MultipleLocator(50)
+ax2.yaxis.set_minor_locator(minorYLocator)
+ax2.xaxis.set_ticks_position('both')
+ax2.yaxis.set_ticks_position('both')
+
+
 ax2.set_ylabel('Sound Speed (km/s)')
 ax2.set_xlabel('Pressure (GPa)')
-ax2.set_xscale('log')
-#ax2.set_yscale('log')
-#ax2.set_xlim( 0,1e4)
-#ax2.set_ylim(0,50)
 
 #savefig('Cs_vs_P_H.pdf')
 #savefig('Cs_vs_P_He.pdf')
-show()
+plt.show()

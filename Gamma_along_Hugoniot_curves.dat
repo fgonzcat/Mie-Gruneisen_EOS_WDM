@@ -1,80 +1,80 @@
 
-#Material= H Cs(P)=exp*(b)*P^a a= 0.5037047077683263  b= 0.7612559302132008
-H          P[GPa]=      1041.8700  rho[g/cc]=   0.3636  Cs[km/s]=  70.7479  gamma=   0.6127
-H          P[GPa]=     10528.6600  rho[g/cc]=   0.3477  Cs[km/s]= 228.7191  gamma=   0.6493
-H          P[GPa]=     42735.8600  rho[g/cc]=   0.3437  Cs[km/s]= 458.7107  gamma=   0.6614
+#Material= H Cs(P)=exp*(b)*P^a a= 0.5037047078549366  b= 0.7612559293783141  rho0[g/cc]= 0.0855
+H          P[GPa]=      1041.8700  rho[g/cc]=   0.3636  Cs[km/s]=  70.7479  gamma=   0.6260
+H          P[GPa]=     10528.6600  rho[g/cc]=   0.3477  Cs[km/s]= 228.7191  gamma=   0.6648
+H          P[GPa]=     42735.8600  rho[g/cc]=   0.3437  Cs[km/s]= 458.7107  gamma=   0.6660
 
-#Material= He Cs(P)=exp*(b)*P^a a= 0.5008818770157304  b= 0.5784007849844996
-He         P[GPa]=        21.1300  rho[g/cc]=   0.4208  Cs[km/s]=   9.6386  gamma=   0.8671
-He         P[GPa]=       106.9300  rho[g/cc]=   0.5854  Cs[km/s]=  17.3094  gamma=   0.5519
-He         P[GPa]=       539.3300  rho[g/cc]=   0.6505  Cs[km/s]=  37.0595  gamma=   0.4642
-He         P[GPa]=      2071.0100  rho[g/cc]=   0.5775  Cs[km/s]=  77.6155  gamma=   0.5297
-He         P[GPa]=      6186.7000  rho[g/cc]=   0.5258  Cs[km/s]= 140.4917  gamma=   0.6038
-He         P[GPa]=     18628.7200  rho[g/cc]=   0.5052  Cs[km/s]= 248.2739  gamma=   0.6430
-He         P[GPa]=     57880.8300  rho[g/cc]=   0.4978  Cs[km/s]= 440.4891  gamma=   0.6583
-He         P[GPa]=    181167.0300  rho[g/cc]=   0.4952  Cs[km/s]= 782.1387  gamma=   0.6640
-He         P[GPa]=    572980.0000  rho[g/cc]=   0.4944  Cs[km/s]= 1390.1314  gamma=   0.6658
-He         P[GPa]=   1811088.1700  rho[g/cc]=   0.4941  Cs[km/s]= 2471.6222  gamma=   0.6664
+#Material= He Cs(P)=exp*(b)*P^a a= 0.5008818759752404  b= 0.5784007934123827  rho0[g/cc]= 0.1235
+He         P[GPa]=        21.1300  rho[g/cc]=   0.4208  Cs[km/s]=   9.6386  gamma=   0.5980
+He         P[GPa]=       106.9300  rho[g/cc]=   0.5854  Cs[km/s]=  17.3094  gamma=   0.3987
+He         P[GPa]=       539.3300  rho[g/cc]=   0.6505  Cs[km/s]=  37.0595  gamma=   0.5027
+He         P[GPa]=      2071.0100  rho[g/cc]=   0.5775  Cs[km/s]=  77.6155  gamma=   0.6245
+He         P[GPa]=      6186.7000  rho[g/cc]=   0.5258  Cs[km/s]= 140.4917  gamma=   0.6612
+He         P[GPa]=     18628.7200  rho[g/cc]=   0.5052  Cs[km/s]= 248.2739  gamma=   0.6645
+He         P[GPa]=     57880.8300  rho[g/cc]=   0.4978  Cs[km/s]= 440.4891  gamma=   0.6665
+He         P[GPa]=    181167.0300  rho[g/cc]=   0.4952  Cs[km/s]= 782.1387  gamma=   0.6667
+He         P[GPa]=    572980.0000  rho[g/cc]=   0.4944  Cs[km/s]= 1390.1314  gamma=   0.6667
+He         P[GPa]=   1811088.1700  rho[g/cc]=   0.4941  Cs[km/s]= 2471.6222  gamma=   0.6667
 
-#Material= Si Cs(P)=exp*(b)*P^a a= 0.4718678167174849  b= -0.557913521186631
-Si         P[GPa]=      1566.4000  rho[g/cc]=   7.1812  Cs[km/s]=  20.9237  gamma=   1.0244
-Si         P[GPa]=      7725.2800  rho[g/cc]=  10.0981  Cs[km/s]=  36.2303  gamma=   0.6281
-Si         P[GPa]=     48455.7700  rho[g/cc]=  11.6989  Cs[km/s]=  85.4636  gamma=   0.4963
-Si         P[GPa]=    237836.1700  rho[g/cc]=  11.4596  Cs[km/s]= 183.3953  gamma=   0.5156
-Si         P[GPa]=    777749.6200  rho[g/cc]=  10.7440  Cs[km/s]= 348.5875  gamma=   0.5357
-Si         P[GPa]=   2734216.1700  rho[g/cc]=   9.7141  Cs[km/s]= 685.4210  gamma=   0.6230
+#Material= Si Cs(P)=exp*(b)*P^a a= 0.47186781702056074  b= -0.557913524614522  rho0[g/cc]= 2.329
+Si         P[GPa]=      1566.4000  rho[g/cc]=   7.1812  Cs[km/s]=  20.9237  gamma=   0.7036
+Si         P[GPa]=      7725.2800  rho[g/cc]=  10.0981  Cs[km/s]=  36.2303  gamma=   0.4397
+Si         P[GPa]=     48455.7700  rho[g/cc]=  11.6989  Cs[km/s]=  85.4636  gamma=   0.5024
+Si         P[GPa]=    237836.1700  rho[g/cc]=  11.4596  Cs[km/s]= 183.3953  gamma=   0.4800
+Si         P[GPa]=    777749.6200  rho[g/cc]=  10.7440  Cs[km/s]= 348.5875  gamma=   0.6453
+Si         P[GPa]=   2734216.1700  rho[g/cc]=   9.7141  Cs[km/s]= 685.4210  gamma=   0.6641
 
-#Material= C Cs(P)=exp*(b)*P^a a= 0.4103195593517945  b= -0.05491253931851674
-C          P[GPa]=      4032.1400  rho[g/cc]=   9.5307  Cs[km/s]=  29.2974  gamma=   1.3126
-C          P[GPa]=     19241.5100  rho[g/cc]=  12.3548  Cs[km/s]=  54.1765  gamma=   0.8326
-C          P[GPa]=     77801.2800  rho[g/cc]=  15.1589  Cs[km/s]=  88.1108  gamma=   0.6311
-C          P[GPa]=    264011.7800  rho[g/cc]=  15.7144  Cs[km/s]= 168.9400  gamma=   0.5697
+#Material= C Cs(P)=exp*(b)*P^a a= 0.4103195593517945  b= -0.05491253931851674  rho0[g/cc]= 3.51617954
+C          P[GPa]=      4032.1400  rho[g/cc]=   9.5307  Cs[km/s]=  29.2974  gamma=   0.7673
+C          P[GPa]=     19241.5100  rho[g/cc]=  12.3548  Cs[km/s]=  54.1765  gamma=   0.6442
+C          P[GPa]=     77801.2800  rho[g/cc]=  15.1589  Cs[km/s]=  88.1108  gamma=   0.4888
+C          P[GPa]=    264011.7800  rho[g/cc]=  15.7144  Cs[km/s]= 168.9400  gamma=   0.6108
 
-#Material= CH2 Cs(P)=exp*(b)*P^a a= 0.45530920624075377  b= 0.111330692955669
-CH2        P[GPa]=       264.8000  rho[g/cc]=   2.5304  Cs[km/s]=  16.5146  gamma=   1.2891
-CH2        P[GPa]=       843.4300  rho[g/cc]=   3.0163  Cs[km/s]=  24.6693  gamma=   0.9630
-CH2        P[GPa]=      3277.0000  rho[g/cc]=   3.5230  Cs[km/s]=  41.4705  gamma=   0.7549
-CH2        P[GPa]=     12710.8600  rho[g/cc]=   3.8465  Cs[km/s]=  74.3549  gamma=   0.6692
-CH2        P[GPa]=     54283.9100  rho[g/cc]=   4.2841  Cs[km/s]= 133.5168  gamma=   0.5645
-CH2        P[GPa]=    188116.5500  rho[g/cc]=   4.0138  Cs[km/s]= 278.3882  gamma=   0.6068
-CH2        P[GPa]=    567190.4600  rho[g/cc]=   3.8641  Cs[km/s]= 499.6955  gamma=   0.6442
-CH2        P[GPa]=   1768063.3300  rho[g/cc]=   3.8103  Cs[km/s]= 881.1939  gamma=   0.6592
+#Material= CH2 Cs(P)=exp*(b)*P^a a= 0.455309206442905  b= 0.11133071529455184  rho0[g/cc]= 0.946
+CH2        P[GPa]=       264.8000  rho[g/cc]=   2.5304  Cs[km/s]=  16.5146  gamma=   0.7597
+CH2        P[GPa]=       843.4300  rho[g/cc]=   3.0163  Cs[km/s]=  24.6693  gamma=   0.6850
+CH2        P[GPa]=      3277.0000  rho[g/cc]=   3.5230  Cs[km/s]=  41.4705  gamma=   0.6388
+CH2        P[GPa]=     12710.8600  rho[g/cc]=   3.8465  Cs[km/s]=  74.3549  gamma=   0.5771
+CH2        P[GPa]=     54283.9100  rho[g/cc]=   4.2841  Cs[km/s]= 133.5168  gamma=   0.5762
+CH2        P[GPa]=    188116.5500  rho[g/cc]=   4.0138  Cs[km/s]= 278.3882  gamma=   0.6607
+CH2        P[GPa]=    567190.4600  rho[g/cc]=   3.8641  Cs[km/s]= 499.6955  gamma=   0.6662
+CH2        P[GPa]=   1768063.3300  rho[g/cc]=   3.8103  Cs[km/s]= 881.1939  gamma=   0.6660
 
-#Material= MgSiO3 Cs(P)=exp*(b)*P^a a= 0.3878453516365333  b= 0.22761054671155115
-MgSiO3     P[GPa]=       466.4500  rho[g/cc]=   6.5414  Cs[km/s]=  15.9759  gamma=   2.2135
-MgSiO3     P[GPa]=      1251.9800  rho[g/cc]=   7.9858  Cs[km/s]=  19.1713  gamma=   1.5414
-MgSiO3     P[GPa]=      4365.7800  rho[g/cc]=  10.5039  Cs[km/s]=  28.6615  gamma=   0.9532
-MgSiO3     P[GPa]=     20386.4700  rho[g/cc]=  13.1170  Cs[km/s]=  53.6156  gamma=   0.6644
-MgSiO3     P[GPa]=     95640.2900  rho[g/cc]=  14.7313  Cs[km/s]= 106.4821  gamma=   0.5613
-MgSiO3     P[GPa]=    406724.6000  rho[g/cc]=  15.0296  Cs[km/s]= 208.9237  gamma=   0.5396
+#Material= MgSiO3 Cs(P)=exp*(b)*P^a a= 0.38784534441658175  b= 0.22761061830841842  rho0[g/cc]= 3.207911
+MgSiO3     P[GPa]=       466.4500  rho[g/cc]=   6.5414  Cs[km/s]=  15.9759  gamma=   0.9008
+MgSiO3     P[GPa]=      1251.9800  rho[g/cc]=   7.9858  Cs[km/s]=  19.1713  gamma=   0.7377
+MgSiO3     P[GPa]=      4365.7800  rho[g/cc]=  10.5039  Cs[km/s]=  28.6615  gamma=   0.5731
+MgSiO3     P[GPa]=     20386.4700  rho[g/cc]=  13.1170  Cs[km/s]=  53.6156  gamma=   0.5581
+MgSiO3     P[GPa]=     95640.2900  rho[g/cc]=  14.7313  Cs[km/s]= 106.4821  gamma=   0.5311
+MgSiO3     P[GPa]=    406724.6000  rho[g/cc]=  15.0296  Cs[km/s]= 208.9237  gamma=   0.5585
 
-#Material= LiF Cs(P)=exp*(b)*P^a a= 0.464046046037749  b= -0.4065120073300201
-LiF        P[GPa]=       673.5100  rho[g/cc]=   6.0260  Cs[km/s]=  17.2432  gamma=   1.7959
-LiF        P[GPa]=      1753.8400  rho[g/cc]=   7.4660  Cs[km/s]=  22.4557  gamma=   1.2247
-LiF        P[GPa]=      5583.5200  rho[g/cc]=   9.4566  Cs[km/s]=  34.4603  gamma=   0.8210
-LiF        P[GPa]=     25146.2200  rho[g/cc]=  11.2297  Cs[km/s]=  62.8544  gamma=   0.6185
-LiF        P[GPa]=    108360.0600  rho[g/cc]=  11.8677  Cs[km/s]= 121.0791  gamma=   0.5812
-LiF        P[GPa]=    426041.8100  rho[g/cc]=  11.6543  Cs[km/s]= 247.5399  gamma=   0.5724
-LiF        P[GPa]=   1439703.2600  rho[g/cc]=  10.8872  Cs[km/s]= 470.3890  gamma=   0.6323
-LiF        P[GPa]=   4485971.2800  rho[g/cc]=  10.6540  Cs[km/s]= 837.8764  gamma=   0.6548
-LiF        P[GPa]=  13952182.8100  rho[g/cc]=  10.5673  Cs[km/s]= 1483.4518  gamma=   0.6636
-LiF        P[GPa]=  44086918.0400  rho[g/cc]=  10.5511  Cs[km/s]= 2641.7995  gamma=   0.6657
+#Material= LiF Cs(P)=exp*(b)*P^a a= 0.4640460450165412  b= -0.4065119936426971  rho0[g/cc]= 2.635
+LiF        P[GPa]=       673.5100  rho[g/cc]=   6.0260  Cs[km/s]=  17.2432  gamma=   0.8231
+LiF        P[GPa]=      1753.8400  rho[g/cc]=   7.4660  Cs[km/s]=  22.4557  gamma=   0.6146
+LiF        P[GPa]=      5583.5200  rho[g/cc]=   9.4566  Cs[km/s]=  34.4603  gamma=   0.5324
+LiF        P[GPa]=     25146.2200  rho[g/cc]=  11.2297  Cs[km/s]=  62.8544  gamma=   0.5852
+LiF        P[GPa]=    108360.0600  rho[g/cc]=  11.8677  Cs[km/s]= 121.0791  gamma=   0.5205
+LiF        P[GPa]=    426041.8100  rho[g/cc]=  11.6543  Cs[km/s]= 247.5399  gamma=   0.6419
+LiF        P[GPa]=   1439703.2600  rho[g/cc]=  10.8872  Cs[km/s]= 470.3890  gamma=   0.6658
+LiF        P[GPa]=   4485971.2800  rho[g/cc]=  10.6540  Cs[km/s]= 837.8764  gamma=   0.6670
+LiF        P[GPa]=  13952182.8100  rho[g/cc]=  10.5673  Cs[km/s]= 1483.4518  gamma=   0.6675
+LiF        P[GPa]=  44086918.0400  rho[g/cc]=  10.5511  Cs[km/s]= 2641.7995  gamma=   0.6660
 
-#Material= SiO2 Cs(P)=exp*(b)*P^a a= 0.41091582101900004  b= 0.039340201214002724
-SiO2       P[GPa]=       466.4500  rho[g/cc]=   6.5414  Cs[km/s]=  15.9759  gamma=   2.2135
-SiO2       P[GPa]=      1251.9800  rho[g/cc]=   7.9858  Cs[km/s]=  19.1713  gamma=   1.5414
-SiO2       P[GPa]=      4365.7800  rho[g/cc]=  10.5039  Cs[km/s]=  28.6615  gamma=   0.9532
-SiO2       P[GPa]=     20386.4700  rho[g/cc]=  13.1170  Cs[km/s]=  53.6156  gamma=   0.6644
-SiO2       P[GPa]=     95640.2900  rho[g/cc]=  14.7313  Cs[km/s]= 106.4821  gamma=   0.5613
-SiO2       P[GPa]=    406724.6000  rho[g/cc]=  15.0296  Cs[km/s]= 208.9237  gamma=   0.5396
-SiO2       P[GPa]=   1375053.8700  rho[g/cc]=  13.8193  Cs[km/s]= 406.9812  gamma=   0.5924
+#Material= SiO2 Cs(P)=exp*(b)*P^a a= 0.41091581972729446  b= 0.03934024298917969  rho0[g/cc]= 3.207911
+SiO2       P[GPa]=       466.4500  rho[g/cc]=   6.5414  Cs[km/s]=  15.9759  gamma=   0.9008
+SiO2       P[GPa]=      1251.9800  rho[g/cc]=   7.9858  Cs[km/s]=  19.1713  gamma=   0.7377
+SiO2       P[GPa]=      4365.7800  rho[g/cc]=  10.5039  Cs[km/s]=  28.6615  gamma=   0.5731
+SiO2       P[GPa]=     20386.4700  rho[g/cc]=  13.1170  Cs[km/s]=  53.6156  gamma=   0.5581
+SiO2       P[GPa]=     95640.2900  rho[g/cc]=  14.7313  Cs[km/s]= 106.4821  gamma=   0.5311
+SiO2       P[GPa]=    406724.6000  rho[g/cc]=  15.0296  Cs[km/s]= 208.9237  gamma=   0.5585
+SiO2       P[GPa]=   1375053.8700  rho[g/cc]=  13.8193  Cs[km/s]= 406.9812  gamma=   0.6605
 
-#Material= MgO Cs(P)=exp*(b)*P^a a= 0.44312440591198166  b= -0.32500220799047025
-MgO        P[GPa]=       839.6500  rho[g/cc]=   7.6490  Cs[km/s]=  17.2043  gamma=   2.1251
-MgO        P[GPa]=      2170.0500  rho[g/cc]=   9.5541  Cs[km/s]=  22.8967  gamma=   1.3505
-MgO        P[GPa]=      8275.5600  rho[g/cc]=  12.8944  Cs[km/s]=  35.4720  gamma=   0.8103
-MgO        P[GPa]=     39010.8700  rho[g/cc]=  15.0485  Cs[km/s]=  65.9734  gamma=   0.6285
-MgO        P[GPa]=    170029.4800  rho[g/cc]=  16.4747  Cs[km/s]= 132.1585  gamma=   0.5561
-MgO        P[GPa]=    700264.5700  rho[g/cc]=  16.3359  Cs[km/s]= 269.2342  gamma=   0.5474
-MgO        P[GPa]=   2019931.4900  rho[g/cc]=  15.0587  Cs[km/s]= 475.9617  gamma=   0.6120
-MgO        P[GPa]=   7719799.6300  rho[g/cc]=  14.4862  Cs[km/s]= 946.6285  gamma=   0.6511
+#Material= MgO Cs(P)=exp*(b)*P^a a= 0.4431244070990239  b= -0.32500222251694366  rho0[g/cc]= 3.56985567
+MgO        P[GPa]=       839.6500  rho[g/cc]=   7.6490  Cs[km/s]=  17.2043  gamma=   0.8001
+MgO        P[GPa]=      2170.0500  rho[g/cc]=   9.5541  Cs[km/s]=  22.8967  gamma=   0.6495
+MgO        P[GPa]=      8275.5600  rho[g/cc]=  12.8944  Cs[km/s]=  35.4720  gamma=   0.5509
+MgO        P[GPa]=     39010.8700  rho[g/cc]=  15.0485  Cs[km/s]=  65.9734  gamma=   0.5908
+MgO        P[GPa]=    170029.4800  rho[g/cc]=  16.4747  Cs[km/s]= 132.1585  gamma=   0.5380
+MgO        P[GPa]=    700264.5700  rho[g/cc]=  16.3359  Cs[km/s]= 269.2342  gamma=   0.6206
+MgO        P[GPa]=   2019931.4900  rho[g/cc]=  15.0587  Cs[km/s]= 475.9617  gamma=   0.6637
+MgO        P[GPa]=   7719799.6300  rho[g/cc]=  14.4862  Cs[km/s]= 946.6285  gamma=   0.6665
