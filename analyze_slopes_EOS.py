@@ -968,8 +968,8 @@ def P_vs_T():
 
 
 #P_vs_E()
-#P_vs_V(T0=20000)
-Pth_over_Eth_vs_density()
+P_vs_V(T0=20000)
+#Pth_over_Eth_vs_density()
 #P_vs_E(rho0=rho0)
 #P_vs_P_MG()
 #P_vs_T()

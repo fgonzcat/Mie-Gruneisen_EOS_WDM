@@ -82,6 +82,7 @@ for j,material in enumerate(materials):
 
 
 P_MgO_McCoy, PE_MgO_McCoy, Cs_MgO_McCoy, CsE_MgO_McCoy = loadtxt('McCoy.dat', usecols=(10,12,18,20), unpack=True)
+P_SiO2_Ocampo,PE_SiO2_Ocampo, rho_SiO2_Ocampo,rhoE_SiO2_Ocampo, gamma_SiO2_Ocampo,gammaE_SiO2_Ocampo, Cs_SiO2_Ocampo, CsE_SiO2_Ocampo = loadtxt('IanOcampo_SiO2_2025_updated_errorbars_personal_communication.dat', usecols=(8,10,5,7,14,16,11,13), unpack=True)
 #ax.errorbar(P_MgO_McCoy, Cs_MgO_McCoy,xerr=PE_MgO_McCoy, yerr=CsE_MgO_McCoy,  fmt='*', color='yellow', mec='k', ecolor='k', ms=20, capsize=0,zorder=10, label= 'MgO (exp. McCoy 2019)' )
 
 ax.set_xscale('log')
@@ -93,9 +94,11 @@ ax.set_xlim( 10.0,9e7)
 first_legend = ax.legend()
 gca().add_artist(first_legend)
 exp, = ax.plot(P_MgO_McCoy, Cs_MgO_McCoy,'*', color='yellow', mec='k', ms=20, zorder=10, label= 'MgO (exp. McCoy 2019)' )
+exp2 = ax.errorbar(P_SiO2_Ocampo,Cs_SiO2_Ocampo, xerr=PE_SiO2_Ocampo, yerr=CsE_SiO2_Ocampo, fmt='^', color='yellow', capsize=4, ecolor='grey',mec='k', ms=10, zorder=10, label= 'SiO$_2$ (exp. Ocampo 2025)' )
 
-second_legend = ax.legend([ exp ] , [ exp.get_label() ] , loc=4,frameon=False,   fontsize=16)
+second_legend = ax.legend([ exp, exp2 ] , [ e.get_label() for e in [exp,exp2] ] , loc=4,frameon=False,   fontsize=16)
 
 #savefig('Sound_Speeds_v2.pdf')
+#savefig('Sound_Speeds_v3.pdf')
 
 show()

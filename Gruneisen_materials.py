@@ -131,9 +131,14 @@ for i in range(iMin+0,iMax+1,1):
     each=8 
     if material=="Hydrogen": each = 3
     elif material=="CH2":    each = 10
-    x=d[ii,1][::each]
-    y=d[ii,6][::each]
-    plot( x,y,  linewidth=2, marker=markers[i%len(markers)], ms=12, mec='k', label=t_leg)
+    #usecols=(1,3,5,7,9,11,13)); # 0:index, 1:rho, 2:V, 3:T, 4:P, 5;E, 6:gamma
+    densities = d[ii,1][::each] 
+    gammas    = d[ii,6][::each]
+    temps     = d[ii,3][::each]
+    press     = d[ii,5][::each]
+    gammas = gammas[densities < max(densities)]
+    densities= densities[densities < max(densities)]
+    plot( densities,gammas,  linewidth=2, marker=markers[i%len(markers)], ms=12, mec='k', label=t_leg)
 
 x=np.linspace(0, 2*max(d[:,1]))
 plot( x, 0*x+2.0/3, '--k', lw=2, zorder=-1) 
@@ -188,10 +193,9 @@ for j,material in enumerate(materials):
  Pi =   P_hug[mat == material].astype(float)
  rhoi = rho_hug[mat == material].astype(float)
  gi =   gamma_hug[mat == material].astype(float)
- print(Pi)
- print(rhoi)
- print(gi)
- a.plot(rhoi, gi , 'o-')
+ #a.plot(rhoi, gi , 'o-')
+ for i in range(len(gj)):
+  print(material,"rho_h[g/cc]=",rhoj[i],"P_hug[GPa]=",Pj[i], "gamma=",gj[i] )
  
 
 #a.xaxis.set_minor_locator(MultipleLocator(0.2));
