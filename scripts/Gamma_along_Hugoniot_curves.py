@@ -105,8 +105,8 @@ ax2.set_xlim(0,17)
 ax2.set_ylim(0.35,1.2)
 
 
-P_MgO_McCoy, PE_MgO_McCoy,rho_MgO_McCoy,rhoE_MgO_McCoy, Cs_MgO_McCoy, CsE_MgO_McCoy,  gamma_MgO_McCoy, gammaE_MgO_McCoy = loadtxt('McCoy.dat', usecols=(10,12,13,15,18,20,21,23), unpack=True)
-P_SiO2_McCoy, PE_SiO2_McCoy, Cs_SiO2_McCoy, CsE_SiO2_McCoy,  gamma_SiO2_McCoy, gammaE_SiO2_McCoy = loadtxt('McCoy_SiO2.dat', usecols=(1,3, 6,8, 9,11), unpack=True)
+P_MgO_McCoy, PE_MgO_McCoy,rho_MgO_McCoy,rhoE_MgO_McCoy, Cs_MgO_McCoy, CsE_MgO_McCoy,  gamma_MgO_McCoy, gammaE_MgO_McCoy = loadtxt('McCoy_MgO_2019.dat', usecols=(10,12,13,15,18,20,21,23), unpack=True)
+P_SiO2_McCoy, PE_SiO2_McCoy, Cs_SiO2_McCoy, CsE_SiO2_McCoy,  gamma_SiO2_McCoy, gammaE_SiO2_McCoy = loadtxt('McCoy_SiO2_2016.dat', usecols=(1,3, 6,8, 9,11), unpack=True)
 #P_SiO2_Ocampo, rho_SiO2_Ocampo,rhoE_SiO2_Ocampo, gamma_SiO2_Ocampo,gammaE_SiO2_Ocampo = loadtxt('IanOcampo_SiO2_2025.dat', usecols=(8,5,7,13,15), unpack=True)
 P_SiO2_Ocampo, rho_SiO2_Ocampo,rhoE_SiO2_Ocampo, gamma_SiO2_Ocampo,gammaE_SiO2_Ocampo = loadtxt('IanOcampo_SiO2_2025_updated_errorbars_personal_communication.dat', usecols=(8,5,7,14,16), unpack=True)
 for i in range(len(P_SiO2_Ocampo)): 
