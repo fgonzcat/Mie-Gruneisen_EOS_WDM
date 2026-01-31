@@ -57,12 +57,15 @@ for j,material in enumerate(materials):
  pp = linspace(min(P_Cs),max(P_Cs), 10000)
  material_lab = material
  if material=='CH2': material_lab = r'CH$_2$'
+ elif material=='SiO2': material_lab = r'SiO$_2$'
+ elif material=='MgSiO3': material_lab = r'MgSiO$_3$'
  zval = 20 if material=='H' else j
  if material=='C': zval = 8 
- ax.plot( pp, spl_cs(pp), '-',c=colors[j], mfc='w', mec=colors[j], lw=2, ms=15 , zorder=zval)
+ if material not in ['H','He', 'CH2']:  # Because I will plot H and He below
+  ax.plot( pp, spl_cs(pp), '-',c=colors[j], mfc='w', mec=colors[j], lw=2, ms=15 , zorder=zval)
  ax.plot( P_Cs, Cs, markers[j], c=colors[j], mfc=lighten_color(colors[j],0.7), mec=colors[j], mew=3,  ms=18 , zorder=zval, label=material_lab)
 
- # OBTAINING GRUNEISEN FROM Cs= sqrt( (dP/drho)_S ):  gamma = ( Cs*rho^2 - rho^2*dPdrho_hug ) / ( P - rho^2*dPdrho_hug * ( 1/rho0 - 1/rho ) ) *2/rho 
+ # OBTAINING GRUNEISEN FROM Cs= sqrt( (dP/drho)_S ):  gamma = ( Cs^2*rho^2 - rho^2*dPdrho_hug ) / ( P - rho^2*dPdrho_hug * ( 1/rho0 - 1/rho ) ) *2/rho 
  linear_fit = lambda x, a,b: a*x+b
  lnP = log(P_Cs)
  lnCs = log(Cs)
@@ -79,6 +82,17 @@ for j,material in enumerate(materials):
  for i in range(len(P_Cs)):
   #print("P[GPa]=", P[i], "Cs[km/s]=", Cs[i], "Gamma=", gamma[i])
   print("%-10s P[GPa]= %14.4f  rho[g/cc]= %8.4f  Cs[km/s]= %8.4f  gamma= %8.4f" % (material,P_Cs[i], rho[i], Cs[i], gamma[i]) )
+
+
+
+# NEW FPEOS Cs
+P_hug, T_hug, rho_hug, rho0_hug, gamma_hug, Cs_hug = loadtxt('FPEOS_Hugoniot_H_with_Cs.txt', usecols=(9,1,7,5, 28-1, 30-1), unpack=True)
+ax.plot( P_hug[::50], Cs_hug[::50], '-',c=colors[0],  lw=2, zorder=-10)
+P_hug, T_hug, rho_hug, rho0_hug, gamma_hug, Cs_hug = loadtxt('FPEOS_Hugoniot_He_with_Cs.txt', usecols=(9,1,7,5, 28-1, 30-1), unpack=True)
+ax.plot( P_hug, Cs_hug, '-',c=colors[1],  lw=2, zorder=-10)
+P_hug, T_hug, rho_hug, rho0_hug, gamma_hug, Cs_hug = loadtxt('FPEOS_Hugoniot_CH2_with_Cs.txt', usecols=(9,1,7,5, 28-1, 30-1), unpack=True)
+ax.plot( P_hug[::20], Cs_hug[::20], '-',c=colors[4],  lw=2, zorder=-10)
+
 
 
 P_MgO_McCoy, PE_MgO_McCoy, Cs_MgO_McCoy, CsE_MgO_McCoy = loadtxt('McCoy.dat', usecols=(10,12,18,20), unpack=True)
@@ -100,5 +114,6 @@ second_legend = ax.legend([ exp, exp2 ] , [ e.get_label() for e in [exp,exp2] ] 
 
 #savefig('Sound_Speeds_v2.pdf')
 #savefig('Sound_Speeds_v3.pdf')
+#savefig('Sound_Speeds_v4.pdf')
 
 show()

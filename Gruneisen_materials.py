@@ -17,11 +17,11 @@ rcParams.update(params)
 a=subplot(111)
 
 #title_ = "First-Principles Equation of State Database";
-#title_ = "Hydrogen";
+title_ = "Hydrogen";
 #title_ = "Helium";
 #title_ = "Silicon";
 #title_ = "CH$_2$";
-title_ = "MgO";
+#title_ = "MgO";
 
 material = title_
 material= "CH2" if material == "CH$_2$" else title_
@@ -88,8 +88,8 @@ EGivenRho = interpolate.interp1d(d[iii,1],d[iii,5])
 markers = ['o', 's', 'D', '^', 'v', '<', '>', 'p', 'h', 'H', 'X', '*',  'P', 'd']
 
 
-for i in range(iMin+0,iMax+1,1):
-#for i in range(iMin+2,iMax+1,2):
+#for i in range(iMin+0,iMax+1,1):
+for i in range(iMin+2,iMax+1,2):   # Choose this one for Hydrogen
 #for i in range(iMin+3,iMax+1,1):
 #for i in range(0,10):
     #ii1  = (d[:,0] ==i) 
@@ -168,9 +168,11 @@ minorYLocator = MultipleLocator(0.01)
 minorXLocator = MultipleLocator(1)
 a.set_xlim(0, 25)
 a.set_ylim(0.3 , 0.85)
+
 loc_leg = 4
 if title_=="Hydrogen":
  a.set_xlim(0,3)
+ a.set_ylim(0.45, 0.7)
  minorYLocator = MultipleLocator(0.01)
  minorXLocator = MultipleLocator(0.1)
 elif title_=="Helium":
@@ -190,9 +192,9 @@ materials = ['MgO']
 for j,material in enumerate(materials):
  print("Material",j,":",material)
  mat, P_hug, rho_hug, Cs_hug, gamma_hug  = np.loadtxt('Gamma_along_Hugoniot_curves.dat', usecols=(0,2,4,6,8) , dtype=str, unpack=True)        # Cs(P) along the Hugoniot
- Pi =   P_hug[mat == material].astype(float)
- rhoi = rho_hug[mat == material].astype(float)
- gi =   gamma_hug[mat == material].astype(float)
+ Pj =   P_hug[mat == material].astype(float)
+ rhoj = rho_hug[mat == material].astype(float)
+ gj =   gamma_hug[mat == material].astype(float)
  #a.plot(rhoi, gi , 'o-')
  for i in range(len(gj)):
   print(material,"rho_h[g/cc]=",rhoj[i],"P_hug[GPa]=",Pj[i], "gamma=",gj[i] )
@@ -212,8 +214,8 @@ legend(loc=loc_leg,frameon=True,framealpha=0.2,handlelength=1.5,ncol=1,handletex
 
 
 
-savefig(scriptName+'.pdf', bbox_inches='tight')
-savefig(scriptName+'.png', bbox_inches='tight', dpi=200)
+#savefig(scriptName+'.pdf', bbox_inches='tight')
+#savefig(scriptName+'.png', bbox_inches='tight', dpi=200)
 
 show()
 

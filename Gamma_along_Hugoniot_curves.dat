@@ -60,14 +60,20 @@ LiF        P[GPa]=   4485971.2800  rho[g/cc]=  10.6540  Cs[km/s]= 837.8764  gamm
 LiF        P[GPa]=  13952182.8100  rho[g/cc]=  10.5673  Cs[km/s]= 1483.4518  gamma=   0.6675
 LiF        P[GPa]=  44086918.0400  rho[g/cc]=  10.5511  Cs[km/s]= 2641.7995  gamma=   0.6660
 
-#Material= SiO2 Cs(P)=exp*(b)*P^a a= 0.41091581972729446  b= 0.03934024298917969  rho0[g/cc]= 3.207911
-SiO2       P[GPa]=       466.4500  rho[g/cc]=   6.5414  Cs[km/s]=  15.9759  gamma=   0.9008
-SiO2       P[GPa]=      1251.9800  rho[g/cc]=   7.9858  Cs[km/s]=  19.1713  gamma=   0.7377
-SiO2       P[GPa]=      4365.7800  rho[g/cc]=  10.5039  Cs[km/s]=  28.6615  gamma=   0.5731
-SiO2       P[GPa]=     20386.4700  rho[g/cc]=  13.1170  Cs[km/s]=  53.6156  gamma=   0.5581
-SiO2       P[GPa]=     95640.2900  rho[g/cc]=  14.7313  Cs[km/s]= 106.4821  gamma=   0.5311
-SiO2       P[GPa]=    406724.6000  rho[g/cc]=  15.0296  Cs[km/s]= 208.9237  gamma=   0.5585
-SiO2       P[GPa]=   1375053.8700  rho[g/cc]=  13.8193  Cs[km/s]= 406.9812  gamma=   0.6605
+#Material= SiO2 Cs(P)=exp*(b)*P^a a= 0.45960706657948586  b= -0.4441335762499053  rho0[g/cc]= 2.65
+SiO2       P[GPa]=      1427.7900  rho[g/cc]=   7.6451  Cs[km/s]=  20.7431  gamma=   0.6771
+SiO2       P[GPa]=      2100.9500  rho[g/cc]=   8.2114  Cs[km/s]=  23.5346  gamma=   0.6267
+SiO2       P[GPa]=      3408.2500  rho[g/cc]=   8.9642  Cs[km/s]=  27.7570  gamma=   0.5835
+SiO2       P[GPa]=      5525.2400  rho[g/cc]=   9.7255  Cs[km/s]=  32.8611  gamma=   0.5536
+SiO2       P[GPa]=     11603.3300  rho[g/cc]=  10.7560  Cs[km/s]=  44.5969  gamma=   0.5415
+SiO2       P[GPa]=     36351.0800  rho[g/cc]=  11.7606  Cs[km/s]=  72.1187  gamma=   0.5254
+SiO2       P[GPa]=     66822.4400  rho[g/cc]=  12.2629  Cs[km/s]=  93.9822  gamma=   0.5059
+SiO2       P[GPa]=    112183.6000  rho[g/cc]=  12.5157  Cs[km/s]= 121.8007  gamma=   0.5229
+SiO2       P[GPa]=    206015.7900  rho[g/cc]=  12.5487  Cs[km/s]= 164.1434  gamma=   0.5393
+SiO2       P[GPa]=    540377.1700  rho[g/cc]=  12.1887  Cs[km/s]= 269.8272  gamma=   0.6093
+SiO2       P[GPa]=   1331541.4600  rho[g/cc]=  11.3459  Cs[km/s]= 442.2835  gamma=   0.6591
+SiO2       P[GPa]=   1993048.3300  rho[g/cc]=  11.1113  Cs[km/s]= 546.9728  gamma=   0.6630
+SiO2       P[GPa]=   2763872.7200  rho[g/cc]=  10.9714  Cs[km/s]= 658.8829  gamma=   0.6673
 
 #Material= MgO Cs(P)=exp*(b)*P^a a= 0.4431244070990239  b= -0.32500222251694366  rho0[g/cc]= 3.56985567
 MgO        P[GPa]=       839.6500  rho[g/cc]=   7.6490  Cs[km/s]=  17.2043  gamma=   0.8001

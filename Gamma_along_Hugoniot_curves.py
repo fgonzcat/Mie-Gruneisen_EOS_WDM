@@ -26,8 +26,8 @@ rcParams.update(params)
 
 
 fig = figure('T vs P isentropes')
-ax=subplot(211)
-ax2=subplot(212)
+ax=subplot(211)   # gamma vs P
+ax2=subplot(212)  # gamma vs rho
 
 
 #materials = [ 'H', 'He', 'Si', 'C', 'CH2',  'MgSiO3', 'LiF', 'SiO2',  'MgO' ]
@@ -62,6 +62,7 @@ for j,material in enumerate(materials):
  material_lab = material
  if material=='CH2': material_lab = r'CH$_2$'
  elif material=='SiO2': material_lab = r'SiO$_2$'
+ elif material=='MgSiO3': material_lab = r'MgSiO$_3$'
  zval = 20 if material=='H' else j
  #if material=='C': zval = 8 
  #ax.plot( pp, spl_g(pp), '-',c=colors[j], mfc='w', mec=colors[j], lw=2, ms=15 , zorder=zval)
@@ -107,24 +108,37 @@ ax2.set_ylim(0.35,1.2)
 P_MgO_McCoy, PE_MgO_McCoy,rho_MgO_McCoy,rhoE_MgO_McCoy, Cs_MgO_McCoy, CsE_MgO_McCoy,  gamma_MgO_McCoy, gammaE_MgO_McCoy = loadtxt('McCoy.dat', usecols=(10,12,13,15,18,20,21,23), unpack=True)
 P_SiO2_McCoy, PE_SiO2_McCoy, Cs_SiO2_McCoy, CsE_SiO2_McCoy,  gamma_SiO2_McCoy, gammaE_SiO2_McCoy = loadtxt('McCoy_SiO2.dat', usecols=(1,3, 6,8, 9,11), unpack=True)
 #P_SiO2_Ocampo, rho_SiO2_Ocampo,rhoE_SiO2_Ocampo, gamma_SiO2_Ocampo,gammaE_SiO2_Ocampo = loadtxt('IanOcampo_SiO2_2025.dat', usecols=(8,5,7,13,15), unpack=True)
-P_SiO2_Ocampo, rho_SiO2_Ocampo,rhoE_SiO2_Ocampo, gamma_SiO2_Ocampo,gammaE_SiO2_Ocampo = loadtxt('IanOcampo_SiO2_2025_updated_errorbars_personal_communication.dat', usecols=(8,5,7,13,15), unpack=True)
+P_SiO2_Ocampo, rho_SiO2_Ocampo,rhoE_SiO2_Ocampo, gamma_SiO2_Ocampo,gammaE_SiO2_Ocampo = loadtxt('IanOcampo_SiO2_2025_updated_errorbars_personal_communication.dat', usecols=(8,5,7,14,16), unpack=True)
+for i in range(len(P_SiO2_Ocampo)): 
+  print ("rho=",rho_SiO2_Ocampo[i], "P[GPa]=",P_SiO2_Ocampo[i])
 
 ax.legend()
 #first_legend = ax.legend()
 #ax.add_artist(first_legend)
 exp  = ax.errorbar(P_MgO_McCoy, gamma_MgO_McCoy, yerr=gammaE_MgO_McCoy, fmt='s', color='yellow', capsize=10, ecolor='grey',mec='k', ms= 8, zorder=10, label= 'MgO (exp. McCoy 2019)' )
 exp2 = ax.errorbar(P_SiO2_Ocampo,gamma_SiO2_Ocampo, yerr=gammaE_SiO2_Ocampo, fmt='^', color='yellow', capsize=4, ecolor='grey',mec='k', ms=10, zorder=10, label= 'SiO$_2$ (exp. Ocampo 2025)' )
-#exp3 = ax.errorbar(P_SiO2_McCoy,gamma_SiO2_McCoy, yerr=gammaE_SiO2_McCoy, fmt='^', color='yellow', capsize=4, ecolor='grey',mec='k', ms=10, zorder=10, label= 'SiO$_2$ (exp. McCoy 2016)' )
+exp3 = ax.errorbar(P_SiO2_McCoy,gamma_SiO2_McCoy, yerr=gammaE_SiO2_McCoy, fmt='<', color='yellow', capsize=4, ecolor='grey',mec='k', ms=10, zorder=-10, label= 'SiO$_2$ (exp. McCoy 2016)', alpha=1.0 )
 #second_legend = ax.legend([ exp ] , [ exp.get_label() ] , loc=2,frameon=False,   fontsize=16)
 
 
 ax2.errorbar(rho_MgO_McCoy, gamma_MgO_McCoy, xerr=rhoE_MgO_McCoy, yerr=gammaE_MgO_McCoy, fmt='s', color='yellow', capsize=10,ecolor='grey',mec='k', ms= 8, zorder=10, label= 'MgO (exp. McCoy 2019)' )
 ax2.errorbar(rho_SiO2_Ocampo, gamma_SiO2_Ocampo, xerr=rhoE_SiO2_Ocampo, yerr=gammaE_SiO2_Ocampo, fmt='^', color='yellow', capsize=10,ecolor='grey',mec='k', ms=10, zorder=10, label= 'SiO$_2$ (exp. Ocampo 2025)' )
+ax2.errorbar(rho_SiO2_Ocampo, -gamma_SiO2_Ocampo, xerr=rhoE_SiO2_Ocampo, yerr=gammaE_SiO2_Ocampo, fmt='<', color='yellow', capsize=10,ecolor='grey',mec='k', ms=10, zorder=10, label= 'SiO$_2$ (exp. McCoy 2016)' )
+
+# New FPEOS_01-18-26 version outputs the Cs and gruneisen along the Hugoniot
+#gamma_MgO,P_MgO, rho_MgO = loadtxt('FPEOS_Hugoniot_MgO_with_Cs.txt', usecols=(28-1, 10-1, 8-1), unpack=True)
+#ax.plot(P_MgO,gamma_MgO,'b-', lw=8,zorder=50)
+#ax2.plot(rho_MgO,gamma_MgO,'b-', lw=8,zorder=50)
+
+
 
 ax2.legend()
 
 
 #savefig('Gamma_along_Hugoniots.pdf')
 #savefig('Gamma_along_Hugoniots.png')
+#savefig('Gamma_along_Hugoniots_v2.pdf')
+#savefig('Gamma_along_Hugoniots_v2.png')
+#savefig('Gamma_along_Hugoniots_v3.pdf')
 
 show()

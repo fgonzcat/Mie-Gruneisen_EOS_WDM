@@ -8,7 +8,7 @@ by Mie Gruneisen model versus the actual thermal pressure.                      
                                                                                                |
 Felipe Gonzalez                                                          Berkeley, 10/22/2025  |
 -----------------------------------------------------------------------------------------------|
-Last modified on:                                                                  10/22/2025
+Last modified on:                                                                  01/30/2026
 """
 
 # =============================================================================
@@ -558,38 +558,38 @@ def P_vs_V(T0):
 #    PLOT ∆P / ∆E  as a function of density
 # =============================================================================
 def Pth_over_Eth_vs_density():
- fig_size = [700/72.27 ,750/72.27]
+ #fig_size = [700/72.27 ,750/72.27]
  params = { 'figure.figsize': fig_size }
  rcParams.update(params)
  
  fig2 = figure(r'Pth vs Eth')
- #ax= subplot(111)
- #ax.set_xlabel('Density (g/cc)') 
- #ax.set_ylabel(r'$P_{\rm th}/E_{\rm th}$ (1/$\AA^3$)') 
- ax2= subplot(211)
- ax3= subplot(212)
- ax3.set_xlabel('Volume ($\AA^3$/f.u.)') 
- ax3.set_ylabel('$\gamma$') 
- ax2.set_ylabel(r'$P_{\rm th}/E_{\rm th}$ (1/$\AA^3$)') 
+ ax= subplot(111)
+ ax.set_xlabel('Density (g/cc)') 
+ ax.set_ylabel(r'$P_{\rm th}/E_{\rm th}$ (1/$\AA^3$)') 
+ #ax2= subplot(211)
+ #ax3= subplot(212)
+ #ax3.set_xlabel('Volume ($\AA^3$/f.u.)') 
+ #ax3.set_ylabel('$\gamma$') 
+ #ax2.set_ylabel(r'$P_{\rm th}/E_{\rm th}$ (1/$\AA^3$)') 
  
- #minorYLocator = MultipleLocator(0.01)
- #minorXLocator = MultipleLocator(1.0)
- #ax.yaxis.set_minor_locator(minorYLocator)
- #ax.xaxis.set_minor_locator(minorXLocator)
- #ax.xaxis.set_ticks_position('both')
- #ax.yaxis.set_ticks_position('both')
-
- minorYLocator = MultipleLocator(0.02)
- minorXLocator = MultipleLocator(0.5)
- ax2.yaxis.set_minor_locator(minorYLocator)
- ax2.xaxis.set_minor_locator(minorXLocator)
- ax2.xaxis.set_ticks_position('both')
- ax2.yaxis.set_ticks_position('both')
  minorYLocator = MultipleLocator(0.01)
- ax3.yaxis.set_minor_locator(minorYLocator)
- ax3.xaxis.set_minor_locator(minorXLocator)
- ax3.xaxis.set_ticks_position('both')
- ax3.yaxis.set_ticks_position('both')
+ minorXLocator = MultipleLocator(1.0)
+ ax.yaxis.set_minor_locator(minorYLocator)
+ ax.xaxis.set_minor_locator(minorXLocator)
+ ax.xaxis.set_ticks_position('both')
+ ax.yaxis.set_ticks_position('both')
+
+ #minorYLocator = MultipleLocator(0.02)
+ #minorXLocator = MultipleLocator(0.5)
+ #ax2.yaxis.set_minor_locator(minorYLocator)
+ #ax2.xaxis.set_minor_locator(minorXLocator)
+ #ax2.xaxis.set_ticks_position('both')
+ #ax2.yaxis.set_ticks_position('both')
+ #minorYLocator = MultipleLocator(0.01)
+ #ax3.yaxis.set_minor_locator(minorYLocator)
+ #ax3.xaxis.set_minor_locator(minorXLocator)
+ #ax3.xaxis.set_ticks_position('both')
+ #ax3.yaxis.set_ticks_position('both')
  
  
  #col     = [ 'g', 'r', 'b', 'k' ]
@@ -619,7 +619,7 @@ def Pth_over_Eth_vs_density():
  
  
  for j,T1 in enumerate(Temp_list):
-  #if j in [1,6,7]: continue 
+  if j in [1,6,7]: continue 
   Pref = EOS[T0]['P']; Pref_err = EOS[T0]['Perr'];
   Eref = EOS[T0]['E']; Eref_err = EOS[T0]['Eerr'];
   P    = EOS[T1]['P']; Perr     = EOS[T1]['Perr'];
@@ -656,19 +656,19 @@ def Pth_over_Eth_vs_density():
  
   label_T1 = str(int(T1/1000))
   ##ax.plot(rhos_f, dPdU_V , '-', c=col[j%len(col)], marker=marker[j%len(marker)], mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
-  #eplot = ax.errorbar(rhos_f, dPdU_V, dPdU_V_err, fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ), zorder=j)
+  eplot = ax.errorbar(rhos_f, dPdU_V, dPdU_V_err, fmt='o', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ), zorder=j)
   linear_fit =  lambda x, a,b: a*x+b
   popt,popv = curve_fit(linear_fit, rhos_f, dPdU_V)              # K/rho = dP/drho is pretty linear with rho
-  #c = eplot[0].get_color()
+  c = eplot[0].get_color()
   rr = linspace(min(rhos_f),max(rhos_f),100)
-  #ax.plot(rr, linear_fit(rr, *popt), '-', color=c, zorder=-j-1)
+  ax.plot(rr, linear_fit(rr, *popt), '-', color=c, zorder=-j-1)
   slope = popt[0] * 1.6605391  #  (1/angstrom^3) /(g/cc) =  1.6605391 (1/amu)
   intercept =  popt[1]
  
-  if j not in [1,6,7]:  # Just tricking the legend: label all of them (all lines in legend) but only plot a few in ax2. All of them would be in ax3 
-   ax2.errorbar(mass/rhos_f, dPdU_V, dPdU_V_err, fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12) #, label=label_T1+ str( r'$\times10^3$ K' ))
-  ax2.errorbar(mass/rhos_f, -dPdU_V, dPdU_V_err, fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
-  ax3.errorbar(mass/rhos_f, dPdU_V * (mass/rhos_f), dPdU_V_err * (mass/rhos_f), fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12) #, label=label_T1+ str( r'$\times10^3$ K' ))
+  #if j not in [1,6,7]:  # Just tricking the legend: label all of them (all lines in legend) but only plot a few in ax2. All of them would be in ax3 
+  # ax2.errorbar(mass/rhos_f, dPdU_V, dPdU_V_err, fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12) #, label=label_T1+ str( r'$\times10^3$ K' ))
+  #ax2.errorbar(mass/rhos_f, -dPdU_V, dPdU_V_err, fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12, label=label_T1+ str( r'$\times10^3$ K' ))
+  #ax3.errorbar(mass/rhos_f, dPdU_V * (mass/rhos_f), dPdU_V_err * (mass/rhos_f), fmt='-', c=col[j%len(col)], marker=marker[j%len(marker)], capsize=4, mec='k',  ms=12) #, label=label_T1+ str( r'$\times10^3$ K' ))
  
  
   #print("# T[K]=",T1)
@@ -678,19 +678,21 @@ def Pth_over_Eth_vs_density():
   #for j in range(len(rhos_f)):
   # gamma = dPdU_V[j] * (mass/rhos_f[j])
   # print("T1[K]= %8.0f  rho[g/cc]= %8.4f   slope(Pth/Eth)_vs_rho[1/amu]= %8.4f  gamma/V[1/A^3]= %8.4f    gamma= %8.4f"  % (T1, rhos_f[j], slope, dPdU_V[j] , gamma) )
- ax3.plot( mass/rhos_f, 0*mass/rhos_f + 2.0/3, 'k--', lw=2,  label=r'$\gamma=2/3$' )
+ #ax3.plot( mass/rhos_f, 0*mass/rhos_f + 2.0/3, 'k--', lw=2,  label=r'$\gamma=2/3$' )
  
- #ax.legend()
- #ax.plot(rhos, 0*rhos+0.21, 'k--', label='0.21 /$\AA^3$')
- ax2.legend(loc=1,fontsize=16)
- ax3.legend(loc=2,fontsize=16)
- ax2.set_ylim(0.04, 0.45)
- setp(ax2.get_xticklabels(),visible=False)
- subplots_adjust(hspace=0)
+ ax.legend()
+ ax.plot(rhos, 0*rhos+0.21, 'k--', label='0.21 /$\AA^3$')
+
+ #ax2.legend(loc=1,fontsize=16)
+ #ax3.legend(loc=2,fontsize=16)
+ #ax2.set_ylim(0.04, 0.45)
+ #setp(ax2.get_xticklabels(),visible=False)
+ #subplots_adjust(hspace=0)
  #ax.set_ylim(0,0.6)
  #savefig('Pth_vs_Eth_v1.png')
  #savefig('Pth_vs_Eth_v2.png')
  #savefig('Pth_vs_Eth_v3.png')
+ #savefig('Pth_vs_Eth_v4.png')
 
 
 
@@ -757,6 +759,7 @@ def P_vs_P_MG():
   temperatures = []
   for ti in Ts[0:11]:
    #V0 = mass/rho0
+   if j==0: print("rho0[g/cc]=", rho0, "T[K]=",ti)
    V0 = V0s[j]
    Ps =  EOS[ti]['P']
    PsE=  EOS[ti]['Perr']
@@ -778,7 +781,7 @@ def P_vs_P_MG():
   #p,= ax6.plot(energies, pressures, 'o', mec='k', ms=10) 
   #p, = ax6.plot(energies, pressures, 'o', mec='k', ms=10, label='Original data at rho[g/cc]='+str(rho0) )
   #p, = ax6.plot(energies, pressures, '-', marker=markers[j], color=colors[j], mec='k', ms=10, label='EOS MgO at rho[g/cc]='+str(rho0) )
-  rho_leg = f"rho[g/cc]={rho0:.2f}"
+  rho_leg = f"{rho0:6.2f}"
   err_plot = ax6.errorbar(energies, pressures, xerr=energiesE, yerr=pressuresE, capsize= 6, fmt=markers[j], lw=1,  color=colors[j], mec='k', ms=10, label=rho_leg ,ecolor='k')
   c = err_plot[0].get_color()
 
@@ -808,8 +811,23 @@ def P_vs_P_MG():
  #ax6.plot(energies, pressures, 'o-', label='Original data at rho[g/cc]='+str(rho0) )
  #ax6.plot(ee, (0.30 * 160.21766 )*(ee - e0)+p0  , '-' , label='Mie Gruneisen')
  ax6.text(energies[4],1.1*pressures[6],r"Temperature $\to$", rotation=19, fontsize=15)
- ax6.text(EOS[T0]['E'][0]+100,  0.95*EOS[T0]['P'][0],r"$T=20\,000$ K", rotation=10, fontsize=12)
- ax6.text(EOS[T1]['E'][0]+100,  0.95*EOS[T1]['P'][0],r"$T=250\,000$ K", rotation=10, fontsize=12)
+ ax6.text(EOS[T0]['E'][0]+100,  0.95*EOS[T0]['P'][0],r"$20\,000$ K", rotation=10, fontsize=12)
+ ax6.text(EOS[T1]['E'][0]+100,  0.95*EOS[T1]['P'][0],r"$250\,000$ K", rotation=10, fontsize=12)
+
+ #ax6.text(EOS[30000]['E'][0]+100,  0.95*EOS[30000]['P'][0],r"$30\,000$ K", rotation=10, fontsize=12)
+ #ax6.text(EOS[40000]['E'][0]+100,  0.95*EOS[40000]['P'][0],r"$40\,000$ K", rotation=10, fontsize=12)
+ #ax6.text(EOS[50000]['E'][0]+100,  0.95*EOS[50000]['P'][0],r"$50\,000$ K", rotation=10, fontsize=12)
+ ax6.annotate(r"$30\,000$ K",  xy=(EOS[30000]['E'][0],  1.00*EOS[30000]['P'][0]) , xytext=(EOS[30000]['E'][0]+800,  1.10*EOS[30000]['P'][0]),  arrowprops=dict(facecolor='black',  arrowstyle='-'), fontsize=12, rotation= 6)
+ ax6.annotate(r"$40\,000$ K",  xy=(EOS[40000]['E'][0],  1.00*EOS[40000]['P'][0]) , xytext=(EOS[40000]['E'][0]+850,  1.22*EOS[40000]['P'][0]),  arrowprops=dict(facecolor='black',  arrowstyle='-'), fontsize=12, rotation= 6)
+ ax6.annotate(r"$50\,000$ K",  xy=(EOS[50000]['E'][0],  1.00*EOS[50000]['P'][0]) , xytext=(EOS[50000]['E'][0]+900,  1.40*EOS[50000]['P'][0]),  arrowprops=dict(facecolor='black',  arrowstyle='-'), fontsize=12, rotation= 6)
+
+ ax6.text(EOS[100000]['E'][0]+100,  0.95*EOS[100000]['P'][0],r"$100\,000$ K", rotation=10, fontsize=12)
+ ax6.text(EOS[500000]['E'][0]+100,  0.95*EOS[500000]['P'][0],r"$500\,000$ K", rotation=10, fontsize=12)
+ ax6.text(EOS[750000]['E'][0]+100,  0.90*EOS[750000]['P'][0],r"$750\,000$ K", rotation= 8, fontsize=12)
+ ax6.text(EOS[1010479]['E'][4]+100,  0.90*EOS[1010479]['P'][4],r"$1\,010\,479$ K", rotation= 6, fontsize=12)
+ ax6.text(EOS[1347305]['E'][4]+100,  0.85*EOS[1347305]['P'][4],r"$1\,347\,305$ K", rotation= 6, fontsize=12)
+ ax6.text(EOS[2020958]['E'][4]-450,  0.72*EOS[2020958]['P'][4],r"$2\,020\,958$ K", rotation= 6, fontsize=12)
+ 
  legend()
  ax6.set_xlabel('Energy (eV/atom)') 
  ax6.set_ylabel(r'Pressure (GPa)') 
@@ -819,6 +837,7 @@ def P_vs_P_MG():
  #savefig('P_vs_E_comparison_v1.png')
  #savefig('P_vs_E_comparison_v2.png')
  #savefig('P_vs_E_comparison_v3.png')
+ #savefig('P_vs_E_comparison_v4.png')
 
 
 
@@ -829,13 +848,15 @@ def P_vs_P_MG():
 #    P(E) -  P_MieGruneisen(E) 
 # =============================================================================
 def P_vs_T():
- fig_size = [700/72.27 ,750/72.27]
- params = { 'figure.figsize': fig_size , 'figure.subplot.left': 0.150}
+ #fig_size = [700/72.27 ,750/72.27]
+ fig_size = [700/72.27 ,950/72.27]
+ params = { 'figure.figsize': fig_size , 'figure.subplot.left': 0.200, 'figure.subplot.bottom': 0.060}
  rcParams.update(params)
  
  fig = figure('P_vs_E')
- ax = subplot(211)
- ax2= subplot(212)
+ ax = subplot(311)
+ ax2= subplot(312)
+ ax3= subplot(313)
  markers = [ 'o', 's', '^', 'v', '>', '<', 'D', 'p', 'h', 'H', 'X', '*', 'P', 'd', '|'] 
  colors = [
      "#007F7F",  # teal
@@ -894,7 +915,7 @@ def P_vs_T():
   temperatures =array(temperatures)
   #p1, = ax.plot(energies,pressures, 'o', mec='k')
   #ax.errorbar(energies,pressures,yerr=pressuresE, fmt='', capsize=6)
-  rho_leg = f"rho[g/cc]={rho0:.2f}"
+  rho_leg = f"{rho0:.2f}"
   p1, = ax.plot(temperatures,pressures, markers[j], mec='k', color=colors[j], ms=14, label=rho_leg )
   c = p1.get_color()
 
@@ -936,42 +957,58 @@ def P_vs_T():
   for i in range(len(energies)):
     Pth_MG += [ doubly_linear_fit(energies[i], temperatures[i]) ]
   Pth_MG=array(Pth_MG)
+  pressures=array(pressures)
   #ax.plot(ee, linear_fit(ee), '-' , color=c  )
   ax.plot(temperatures, linear_fit(energies), '-' ,dashes=[ 5,1,1,1], color=c ,zorder=-j )
   ax.plot(temperatures, Pth_MG, 'k-' ,lw=2, color=c ,zorder=-j )
   
   #ax2.plot(energies, pressures - linear_fit(energies) , 'o-', ms= 6 )
   #ax2.errorbar(energies, pressures - linear_fit(energies), yerr=pressuresE , fmt='', capsize=6  )
-  ax2.errorbar(temperatures, pressures - linear_fit(energies), yerr=pressuresE , fmt='-',mfc='w', mec=c, marker=markers[j], color=colors[j], dashes=[ 5,1,1,1], ms=10,lw=2, capsize=6, alpha=0.5  )
-  ax2.errorbar(temperatures, pressures - Pth_MG, yerr=pressuresE , fmt='-',mec='k', marker=markers[j], color=colors[j], ms=14,lw=2, capsize=6, zorder=j )
+  ax2.errorbar(temperatures, (pressures - linear_fit(energies))/pressures, yerr=pressuresE/abs(pressures) , fmt='-',mfc='w', mec=c, marker=markers[j], color=colors[j], dashes=[ 5,1,1,1], ms=10,lw=2, capsize=6, alpha=0.5  )
+  ax2.errorbar(temperatures, (pressures - Pth_MG)/pressures, yerr=pressuresE/abs(pressures) , fmt='-',mec='k', marker=markers[j], color=colors[j], ms=14,lw=2, capsize=6, zorder=j )
+
+  ax3.errorbar(temperatures, (pressures - linear_fit(energies)), yerr=pressuresE , fmt='-',mfc='w', mec=c, marker=markers[j], color=colors[j], dashes=[ 5,1,1,1], ms=10,lw=2, capsize=6, alpha=0.5  )
+  ax3.errorbar(temperatures, (pressures - Pth_MG), yerr=pressuresE , fmt='-',mec='k', marker=markers[j], color=colors[j], ms=14,lw=2, capsize=6, zorder=j )
  ax2.plot(temperatures, 0*temperatures, 'k--')
- ax2.errorbar(-temperatures, pressures - linear_fit(energies), yerr=pressuresE , fmt='-',mfc='w', mec=c, marker=markers[8], color=colors[8], dashes=[ 5,1,1,1], ms=10,lw=2, capsize=6, alpha=0.5 ,mew=1, label='Model 1' )
- ax2.errorbar(-temperatures, pressures-Pth_MG, yerr=pressuresE , fmt='-',mec='k', marker=markers[8], color=colors[8], ms=14,lw=2, capsize=6, zorder=j , label='Model 2')
- ax2.legend(loc=3,numpoints=2)
+ #ax2.errorbar(-temperatures, (pressures - linear_fit(energies))/pressures, yerr=pressuresE/abs(pressures) , fmt='-',mfc='w', mec=c, marker=markers[8], color=colors[8], dashes=[ 5,1,1,1], ms=10,lw=2, capsize=6, alpha=0.5 ,mew=1, label='Model 1' )
+ #ax2.errorbar(-temperatures, (pressures-Pth_MG)/pressures, yerr=pressuresE/abs(pressures) , fmt='-',mec='k', marker=markers[8], color=colors[8], ms=14,lw=2, capsize=6, zorder=j , label='Model 2')
+ ax3.errorbar(-temperatures, (pressures - linear_fit(energies))/pressures, yerr=pressuresE/abs(pressures) , fmt='-',mfc='w', mec=c, marker=markers[8], color=colors[8], dashes=[ 5,1,1,1], ms=10,lw=2, capsize=6, alpha=0.5 ,mew=1, label='Model 1' )
+ ax3.errorbar(-temperatures, (pressures-Pth_MG)/pressures, yerr=pressuresE/abs(pressures) , fmt='-',mec='k', marker=markers[8], color=colors[8], ms=14,lw=2, capsize=6, zorder=j , label='Model 2')
+ #ax2.legend(loc=3,numpoints=2)
+ ax3.legend(loc=3,numpoints=2)
 
  ax.set_yscale('log')
  ax.set_xscale('log')
  ax2.set_xscale('log')
- ax2.set_ylim(-1500,550)
+ ax3.set_xscale('log')
+ ax3.set_ylim(-1500,550)
  ax.legend(loc=4, fontsize=12)
  setp(ax.get_xticklabels(),visible=False)
+ setp(ax2.get_xticklabels(),visible=False)
  subplots_adjust(hspace=0)
 
  ax.set_ylabel(r'Pressure (GPa)') 
- ax2.set_ylabel(r'$\Delta P$ (GPa)') 
- ax2.set_xlabel(r'Temperature (K)') 
+ ax3.set_ylabel(r'$\Delta P$ (GPa)') 
+ ax2.set_ylabel(r'Relative Pressure Deviation '+'\n'+r' $(P-P_{\rm model})/P$') 
+ ax3.set_xlabel(r'Temperature (K)') 
+
+ minorYLocator = MultipleLocator(0.01)
+ ax2.yaxis.set_minor_locator(minorYLocator)
+ minorYLocator = MultipleLocator(100)
+ ax3.yaxis.set_minor_locator(minorYLocator)
  
  #savefig('P_vs_T_MG_v1.png')
  #savefig('P_vs_T_MG_v2.png')
+ #savefig('P_vs_T_MG_v3.png')
 
 
 
 
 #P_vs_E()
-P_vs_V(T0=20000)
+#P_vs_V(T0=20000)
 #Pth_over_Eth_vs_density()
 #P_vs_E(rho0=rho0)
-#P_vs_P_MG()
+P_vs_P_MG()
 #P_vs_T()
 
 
