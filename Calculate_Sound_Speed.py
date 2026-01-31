@@ -8,6 +8,8 @@ from scipy.optimize import curve_fit
 from scipy.interpolate import InterpolatedUnivariateSpline
 import glob
 from matplotlib.colors import to_rgb
+from scipy.optimize import brentq
+
 
 
 fig_size = [700/72.27 ,550/72.27]
@@ -25,14 +27,14 @@ params = {'axes.labelsize': 20, 'legend.fontsize': 15,
 rcParams.update(params)
 
 
-material = 'H'
+#material = 'H'
 #material = 'He'
 #material = 'MgSiO3'
 #material = 'Si'
 #material = 'CH2'
 #material = 'C'
 #material = 'LiF'
-#material = 'SiO2'
+material = 'SiO2'
 #material = 'MgO'
 
 fig = figure('T vs P isentropes')
@@ -46,7 +48,7 @@ for i in range(0,idx):
  ti = T[index==i]
  pi = P[index==i]
  rhoi= rho[index==i]
- ax.plot(pi,ti, label='Isentrope '+str(i))
+ ax.plot(pi,ti,label='Isentrope '+str(i))
 ax.plot(P_hug, T_hug,'r-', lw=5, dashes=[10,1,1,1], label='Hugoniot ' + material )
 ax.legend()
 ax.set_xlabel('Pressure (GPa)')
@@ -66,7 +68,8 @@ list_adiabats['Si']= [6,7, 0,9, 1,11,2,13,3,15,4]
 list_adiabats['CH2']= [5,6,7,8,9,11,13,15]
 list_adiabats['C']= [1,2,3,4,5]
 list_adiabats['LiF']= [0,1,2,3,4,5,6,7,8,9]
-list_adiabats['SiO2']= [6,7,8,9,10,12,14]
+#list_adiabats['SiO2']= [6,7,8,9,10,12,14]
+list_adiabats['SiO2']= [1,2,3,4,5,6,7,8,9,10,12,14,15,16]
 list_adiabats['MgO']= [6,7,9,11,13,1,15]
 list_adiabats['MgO']= [6,7,8,9,10,12,1,2]
 
@@ -84,6 +87,7 @@ for i in list_adiabats[material]:
  rhoi= rho[index==i]
  try:
   spl_Pad = InterpolatedUnivariateSpline(rhoi,Pi)
+  spl_Tad = InterpolatedUnivariateSpline(Pi,Ti)
   spl_rhoad = InterpolatedUnivariateSpline(Pi,rhoi)
  except:
   print("Spline did not work for Ad ",i)
@@ -95,14 +99,29 @@ for i in list_adiabats[material]:
  diff_values = diff(Pi)
  sign_change = np.where(np.sign(diff_values[:-1]) != np.sign(diff_values[1:]))[0]
  try:
-  P_solution = Pi[sign_change][0]
-  T_solution = Ti[sign_change][0]
+  ## Old, crude method: P_solution is one of the Pi points
+  #P_solution = Pi[sign_change][0]
+  #T_solution = Ti[sign_change][0]
+  #rho_solution = spl_Rhohug(P_solution)
+  #Cs_solution  = Cs(rho_solution)
+  #P_solutions   += [P_solution]
+  #T_solutions   += [T_solution]
+  #Cs_solutions  += [Cs_solution]
+  #rho_solutions += [rho_solution]
+  
+  # New, more sophisticated solution: find the root
+  j = sign_change[0]
+  p1, p2 = Pi[j], Pi[j+1]
+  P_solution = brentq(diff, p1, p2)
+
+  T_solution   = spl_Tad(P_solution)
   rho_solution = spl_Rhohug(P_solution)
   Cs_solution  = Cs(rho_solution)
   P_solutions   += [P_solution]
   T_solutions   += [T_solution]
   Cs_solutions  += [Cs_solution]
   rho_solutions += [rho_solution]
+
   print("Ad %2i  P_Hug[GPa]= %14.2f  rho_Hug[g/cc]= %8.4f  T_Hug[K]= %12.0f  Cs[km/s]= %12.4f" % (i, P_solution, rho_solution, T_solution,Cs_solution) )
  except:
   print("No solution for Ad "+str(i))
